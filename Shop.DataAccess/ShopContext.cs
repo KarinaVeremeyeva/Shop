@@ -11,9 +11,12 @@ namespace Shop.DataAccess
             Database.EnsureCreated();
         }
 
-        public DbSet<Category> Categories { get; set; }
+        public DbSet<Category> Categories => Set<Category>();
+
         public DbSet<Details> Details { get; set; }
+
         public DbSet<Product> Products { get; set; }
+
         public DbSet<ProductDetails> ProductDetails { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -39,30 +42,21 @@ namespace Shop.DataAccess
                 .WithOne(x => x.Category)
                 .HasForeignKey(x => x.CategoryId);
 
-            //modelBuilder.Entity<Category>()
-            //    .HasOne(x => x.ParentCategory)
-            //    .WithMany(x => x.ChildCategories)
-            //    .HasForeignKey(x => x.ParentCategoryId)
-            //    .OnDelete(DeleteBehavior.ClientCascade);
-
-
-
             modelBuilder.Entity<Product>()
                 .HasMany(x => x.Details)
                 .WithMany(x => x.Products)
                 .UsingEntity<ProductDetails>(
                     j => j
-                    .HasOne(x => x.Detail)
-                    .WithMany(x => x.ProductDetails)
-                    .HasForeignKey(x => x.DetailsId),
+                        .HasOne(x => x.Detail)
+                        .WithMany(x => x.ProductDetails)
+                        .HasForeignKey(x => x.DetailsId),
                     j => j
-                    .HasOne(x => x.Product)
-                    .WithMany(x => x.ProductDetails)
-                    .HasForeignKey(x => x.ProductId),
+                        .HasOne(x => x.Product)
+                        .WithMany(x => x.ProductDetails)
+                        .HasForeignKey(x => x.ProductId),
                     j => 
                     {
                         j.HasKey(x => new { x.ProductId, x. DetailsId });
-
                     });
 
             base.OnModelCreating(modelBuilder);
