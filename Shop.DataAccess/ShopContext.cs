@@ -13,11 +13,11 @@ namespace Shop.DataAccess
 
         public DbSet<Category> Categories => Set<Category>();
 
-        public DbSet<Details> Details { get; set; }
+        public DbSet<Detail> Details { get; set; }
 
         public DbSet<Product> Products { get; set; }
 
-        public DbSet<ProductDetails> ProductDetails { get; set; }
+        public DbSet<ProductDetail> ProductDetails { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -45,7 +45,7 @@ namespace Shop.DataAccess
             modelBuilder.Entity<Product>()
                 .HasMany(x => x.Details)
                 .WithMany(x => x.Products)
-                .UsingEntity<ProductDetails>(
+                .UsingEntity<ProductDetail>(
                     j => j
                         .HasOne(x => x.Detail)
                         .WithMany(x => x.ProductDetails)
@@ -58,6 +58,9 @@ namespace Shop.DataAccess
                     {
                         j.HasKey(x => new { x.ProductId, x. DetailsId });
                     });
+
+            modelBuilder.Entity<Product>()
+                .Property(x => x.Price).HasPrecision(18, 2);
 
             base.OnModelCreating(modelBuilder);
         }

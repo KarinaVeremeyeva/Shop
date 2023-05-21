@@ -6,8 +6,12 @@ internal class Program
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
-        builder.Services.AddDbContext<ShopContext>(options => options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=ShopDb;Trusted_Connection=True;"));
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        
+        builder.Services.AddDbContext<ShopContext>(options =>
+        {
+            options.UseSqlServer(connectionString);
+        });
 
         builder.Services.AddControllers();
 

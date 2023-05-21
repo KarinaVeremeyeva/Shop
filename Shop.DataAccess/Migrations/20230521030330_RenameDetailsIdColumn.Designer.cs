@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Shop.DataAccess;
 
@@ -11,9 +12,11 @@ using Shop.DataAccess;
 namespace Shop.DataAccess.Migrations
 {
     [DbContext(typeof(ShopContext))]
-    partial class ShopContextModelSnapshot : ModelSnapshot
+    [Migration("20230521030330_RenameDetailsIdColumn")]
+    partial class RenameDetailsIdColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,8 +58,9 @@ namespace Shop.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -83,8 +87,8 @@ namespace Shop.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.HasKey("Id");
 
@@ -93,14 +97,14 @@ namespace Shop.DataAccess.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Shop.DataAccess.Entities.ProductDetail", b =>
+            modelBuilder.Entity("Shop.DataAccess.Entities.ProductDetails", b =>
                 {
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("DetailsId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("DetailId");
+                        .HasColumnName("DetailIdNew");
 
                     b.Property<string>("Value")
                         .IsRequired()
@@ -134,7 +138,7 @@ namespace Shop.DataAccess.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Shop.DataAccess.Entities.ProductDetail", b =>
+            modelBuilder.Entity("Shop.DataAccess.Entities.ProductDetails", b =>
                 {
                     b.HasOne("Shop.DataAccess.Entities.Detail", "Detail")
                         .WithMany("ProductDetails")
