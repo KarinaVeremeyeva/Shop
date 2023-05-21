@@ -35,6 +35,14 @@ namespace Shop.DataAccess.Migrations
                 table: "Products",
                 type: "nvarchar(max)",
                 nullable: true);
+
+            migrationBuilder.AlterColumn<int>(
+                name: "Type",
+                table: "Details",
+                type: "int",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
         }
 
         /// <inheritdoc />
@@ -68,6 +76,14 @@ namespace Shop.DataAccess.Migrations
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Type",
+                table: "Details",
+                type: "nvarchar(max)",
+                nullable: false,
+                oldClrType: typeof(int),
+                oldType: "int");
         }
     }
 }

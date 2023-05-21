@@ -12,7 +12,7 @@ using Shop.DataAccess;
 namespace Shop.DataAccess.Migrations
 {
     [DbContext(typeof(ShopContext))]
-    [Migration("20230521011559_UpdateProductProperties")]
+    [Migration("20230521011559_UpdateProductAndDetails")]
     partial class UpdateProductProperties
     {
         /// <inheritdoc />

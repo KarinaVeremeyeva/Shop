@@ -1,9 +1,7 @@
 namespace Shop.DataAccess.Entities
 {
-    public class Detail
+    public class Detail : Entity
     {
-        public Guid Id { get; set; }
-
         public string Name { get; set; }
 
         public DetailType Type { get; set; }

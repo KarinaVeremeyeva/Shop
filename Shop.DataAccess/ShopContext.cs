@@ -62,6 +62,8 @@ namespace Shop.DataAccess
             modelBuilder.Entity<Product>()
                 .Property(x => x.Price).HasPrecision(18, 2);
 
+            modelBuilder.Seed();
+
             base.OnModelCreating(modelBuilder);
         }
     }

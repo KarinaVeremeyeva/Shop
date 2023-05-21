@@ -1,9 +1,7 @@
 ﻿namespace Shop.DataAccess.Entities
 {
-    public class Category
+    public class Category : Entity
     {
-        public Guid Id { get; set; }
-
         public string Name { get; set; }
 
         public string? Description { get; set; }
