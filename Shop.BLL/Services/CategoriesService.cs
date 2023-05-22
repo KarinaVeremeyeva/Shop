@@ -32,6 +32,7 @@ namespace Shop.BLL.Services
             {
                 throw new ArgumentException(nameof(category), "Entity was not found");
             }
+
             var categoryAndChildrenIds = GetCategoryAndChildrenIds(category);
 
             return categoryAndChildrenIds;

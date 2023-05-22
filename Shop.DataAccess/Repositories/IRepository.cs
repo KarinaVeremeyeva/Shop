@@ -1,6 +1,8 @@
-﻿namespace Shop.DataAccess.Repositories
+﻿using Shop.DataAccess.Entities;
+
+namespace Shop.DataAccess.Repositories
 {
-    public interface IRepository<TEntity> where TEntity : class
+    public interface IRepository<TEntity> where TEntity : Entity
     {
         TEntity? GetById(Guid id);
 

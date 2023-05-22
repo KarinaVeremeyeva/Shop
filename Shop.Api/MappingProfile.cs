@@ -11,8 +11,8 @@ namespace Shop.Api
             CreateMap<CategoryModel, CategoryDto>();
             CreateMap<ProductModel, ProductDto>()
                 .ForMember(
-                dest => dest.Details,
-                opt => opt.MapFrom(src => src.Details));
+                    dest => dest.Details,
+                    opt => opt.MapFrom(src => src.Details));
             CreateMap<DetailModel, DetailsDto>();
         }
     }

@@ -311,75 +311,75 @@ namespace Shop.DataAccess
                 new ProductDetail
                 {
                     ProductId = Guid.Parse("86ca08b6-3b59-4046-9c3f-260f0631ceb8"),
-                    DetailsId = Guid.Parse("f3f27ab2-e1f8-4ba4-a4f2-2e5b97bb769b"),
+                    DetailId = Guid.Parse("f3f27ab2-e1f8-4ba4-a4f2-2e5b97bb769b"),
                     Value = "Apple"
                 },
                 new ProductDetail
                 {
                     ProductId = Guid.Parse("86ca08b6-3b59-4046-9c3f-260f0631ceb8"),
-                    DetailsId = Guid.Parse("c621e56a-5546-49f1-bb69-fd97c9a00fe1"),
+                    DetailId = Guid.Parse("c621e56a-5546-49f1-bb69-fd97c9a00fe1"),
                     Value = "6.1"
                 },
                 new ProductDetail
                 {
                     ProductId = Guid.Parse("86ca08b6-3b59-4046-9c3f-260f0631ceb8"),
-                    DetailsId = Guid.Parse("0d517bcf-374b-4095-9e7c-4187bd814e27"),
+                    DetailId = Guid.Parse("0d517bcf-374b-4095-9e7c-4187bd814e27"),
                     Value = "Midnight"
                 },
                 new ProductDetail
                 {
                     ProductId = Guid.Parse("86ca08b6-3b59-4046-9c3f-260f0631ceb8"),
-                    DetailsId = Guid.Parse("fdfa2737-bf8f-4fb8-9477-bfa52cbd198c"),
+                    DetailId = Guid.Parse("fdfa2737-bf8f-4fb8-9477-bfa52cbd198c"),
                     Value = "12"
                 },
 
                 new ProductDetail
                 {
                     ProductId = Guid.Parse("75ac7087-0031-4895-8a7c-60e87b96a5d7"),
-                    DetailsId = Guid.Parse("f3f27ab2-e1f8-4ba4-a4f2-2e5b97bb769b"),
+                    DetailId = Guid.Parse("f3f27ab2-e1f8-4ba4-a4f2-2e5b97bb769b"),
                     Value = "Samsung"
                 },
                 new ProductDetail
                 {
                     ProductId = Guid.Parse("75ac7087-0031-4895-8a7c-60e87b96a5d7"),
-                    DetailsId = Guid.Parse("c621e56a-5546-49f1-bb69-fd97c9a00fe1"),
+                    DetailId = Guid.Parse("c621e56a-5546-49f1-bb69-fd97c9a00fe1"),
                     Value = "6.4"
                 },
                 new ProductDetail
                 {
                     ProductId = Guid.Parse("75ac7087-0031-4895-8a7c-60e87b96a5d7"),
-                    DetailsId = Guid.Parse("0d517bcf-374b-4095-9e7c-4187bd814e27"),
+                    DetailId = Guid.Parse("0d517bcf-374b-4095-9e7c-4187bd814e27"),
                     Value = "Black"
                 },
                 new ProductDetail
                 {
                     ProductId = Guid.Parse("75ac7087-0031-4895-8a7c-60e87b96a5d7"),
-                    DetailsId = Guid.Parse("fdfa2737-bf8f-4fb8-9477-bfa52cbd198c"),
+                    DetailId = Guid.Parse("fdfa2737-bf8f-4fb8-9477-bfa52cbd198c"),
                     Value = "64"
                 },
 
                 new ProductDetail
                 {
                     ProductId = Guid.Parse("7cda37ad-0d0a-4685-8104-3f435f5eeaf6"),
-                    DetailsId = Guid.Parse("f3f27ab2-e1f8-4ba4-a4f2-2e5b97bb769b"),
+                    DetailId = Guid.Parse("f3f27ab2-e1f8-4ba4-a4f2-2e5b97bb769b"),
                     Value = "Xiaomi"
                 },
                 new ProductDetail
                 {
                     ProductId = Guid.Parse("7cda37ad-0d0a-4685-8104-3f435f5eeaf6"),
-                    DetailsId = Guid.Parse("c621e56a-5546-49f1-bb69-fd97c9a00fe1"),
+                    DetailId = Guid.Parse("c621e56a-5546-49f1-bb69-fd97c9a00fe1"),
                     Value = "6.67"
                 },
                 new ProductDetail
                 {
                     ProductId = Guid.Parse("7cda37ad-0d0a-4685-8104-3f435f5eeaf6"),
-                    DetailsId = Guid.Parse("0d517bcf-374b-4095-9e7c-4187bd814e27"),
+                    DetailId = Guid.Parse("0d517bcf-374b-4095-9e7c-4187bd814e27"),
                     Value = "Black"
                 },
                 new ProductDetail
                 {
                     ProductId = Guid.Parse("7cda37ad-0d0a-4685-8104-3f435f5eeaf6"),
-                    DetailsId = Guid.Parse("fdfa2737-bf8f-4fb8-9477-bfa52cbd198c"),
+                    DetailId = Guid.Parse("fdfa2737-bf8f-4fb8-9477-bfa52cbd198c"),
                     Value = "50"
                 }
             );
