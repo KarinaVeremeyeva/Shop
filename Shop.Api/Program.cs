@@ -1,5 +1,9 @@
 using Shop.DataAccess;
+using Shop.BLL.Services;
 using Microsoft.EntityFrameworkCore;
+using Shop.DataAccess.Repositories;
+using Shop.BLL;
+using Shop.Api;
 
 internal class Program
 {
@@ -12,6 +16,13 @@ internal class Program
         {
             options.UseSqlServer(connectionString);
         });
+
+        builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+        builder.Services.AddScoped<IProductRepository, ProductRepository>();
+        builder.Services.AddScoped<ICategoriesService, CategoriesService>();
+        builder.Services.AddScoped<IProductsService, ProductsService>();
+
+        builder.Services.AddAutoMapper(typeof(BusinessLogicProfile), typeof(MappingProfile));
 
         builder.Services.AddControllers();
 

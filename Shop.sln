@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.DataAccess", "Shop.Dat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.Api", "Shop.Api\Shop.Api.csproj", "{6221E348-8D61-4514-ACEB-2A0033C66174}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.BLL", "Shop.BLL\Shop.BLL.csproj", "{0726CA61-53A8-438F-9149-32ADA1390FB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.BLL", "Shop.BLL\Shop.BLL.csproj", "{0726CA61-53A8-438F-9149-32ADA1390FB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -244,6 +244,20 @@ namespace Shop.DataAccess.Migrations
                     b.HasIndex("DetailsId");
 
                     b.ToTable("ProductDetails");
+
+                    b.HasData(
+                        new
+                        {
+                            ProductId = new Guid("86ca08b6-3b59-4046-9c3f-260f0631ceb8"),
+                            DetailsId = new Guid("f3f27ab2-e1f8-4ba4-a4f2-2e5b97bb769b"),
+                            Value = "blue"
+                        },
+                        new
+                        {
+                            ProductId = new Guid("86ca08b6-3b59-4046-9c3f-260f0631ceb8"),
+                            DetailsId = new Guid("b1f3413e-8556-401f-8ffe-ba221b9d5e58"),
+                            Value = "test"
+                        });
                 });
 
             modelBuilder.Entity("Shop.DataAccess.Entities.Category", b =>

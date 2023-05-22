@@ -1,4 +1,5 @@
-﻿using Shop.DataAccess.Entities;
+﻿using AutoMapper;
+using Shop.BLL.Models;
 using Shop.DataAccess.Repositories;
 
 namespace Shop.BLL.Services
@@ -7,20 +8,32 @@ namespace Shop.BLL.Services
     {
         private ICategoriesService _categoriesService;
         private IProductRepository _productRepository;
+        private IMapper _mapper;
 
         public ProductsService(
             ICategoriesService categoriesService,
-            IProductRepository productRepository)
+            IProductRepository productRepository,
+            IMapper mapper)
         {
             _categoriesService = categoriesService;
             _productRepository = productRepository;
+            _mapper = mapper;
         }
 
-        public IEnumerable<Product> GetProductByCategoryId(Guid categoryId)
+        public ProductModel? GetProduct(Guid productId)
+        {
+            var product = _productRepository.GetById(productId);
+
+            return _mapper.Map<ProductModel>(product);
+        }
+
+        public IEnumerable<ProductModel> GetProductByCategoryId(Guid categoryId)
         {
             var categoryAndChildrenIds = _categoriesService.GetCategoryAndChildrenIds(categoryId);
 
-            return _productRepository.GetProductsByCategoryIds(categoryAndChildrenIds);
+            var productsByCategoryIds = _productRepository.GetProductsByCategoryIds(categoryAndChildrenIds);
+
+            return _mapper.Map<List<ProductModel>>(productsByCategoryIds);
         }
     }
 }

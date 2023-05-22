@@ -56,6 +56,15 @@ namespace Shop.DataAccess.Migrations
                     { new Guid("86ca08b6-3b59-4046-9c3f-260f0631ceb8"), new Guid("c11cdea5-b146-421b-ad27-bfe07dcb6a66"), "This is a description for product 1.", "Product 1", null, 100m },
                     { new Guid("d09d2c8d-87e7-465b-9364-b409233a8607"), new Guid("7bf9425a-1c6e-4078-817f-1c49b4909404"), "This is a description for product 5.", "Product 5", null, 50m }
                 });
+
+            migrationBuilder.InsertData(
+                table: "ProductDetails",
+                columns: new[] { "DetailId", "ProductId", "Value" },
+                values: new object[,]
+                {
+                                { new Guid("b1f3413e-8556-401f-8ffe-ba221b9d5e58"), new Guid("86ca08b6-3b59-4046-9c3f-260f0631ceb8"), "quantity" },
+                                { new Guid("f3f27ab2-e1f8-4ba4-a4f2-2e5b97bb769b"), new Guid("86ca08b6-3b59-4046-9c3f-260f0631ceb8"), "blue" }
+                });
         }
 
         /// <inheritdoc />
@@ -155,6 +164,16 @@ namespace Shop.DataAccess.Migrations
                 table: "Categories",
                 keyColumn: "Id",
                 keyValue: new Guid("027ab076-461c-4f42-a09b-e052b818aa57"));
+
+            migrationBuilder.DeleteData(
+                table: "ProductDetails",
+                keyColumns: new[] { "DetailId", "ProductId" },
+                keyValues: new object[] { new Guid("b1f3413e-8556-401f-8ffe-ba221b9d5e58"), new Guid("86ca08b6-3b59-4046-9c3f-260f0631ceb8") });
+
+            migrationBuilder.DeleteData(
+                table: "ProductDetails",
+                keyColumns: new[] { "DetailId", "ProductId" },
+                keyValues: new object[] { new Guid("f3f27ab2-e1f8-4ba4-a4f2-2e5b97bb769b"), new Guid("86ca08b6-3b59-4046-9c3f-260f0631ceb8") });
         }
     }
 }

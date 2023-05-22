@@ -1,4 +1,6 @@
-﻿using Shop.DataAccess.Entities;
+﻿using AutoMapper;
+using Shop.BLL.Models;
+using Shop.DataAccess.Entities;
 using Shop.DataAccess.Repositories;
 
 namespace Shop.BLL.Services
@@ -6,10 +8,21 @@ namespace Shop.BLL.Services
     public class CategoriesService : ICategoriesService
     {
         private ICategoryRepository _categoryRepository;
+        private IMapper _mapper;
 
-        public CategoriesService(ICategoryRepository categoryRepository)
+        public CategoriesService(
+            ICategoryRepository categoryRepository,
+            IMapper mapper)
         {
             _categoryRepository = categoryRepository;
+            _mapper = mapper;
+        }
+
+        public IEnumerable<CategoryModel> GetCategories()
+        {
+            var categories = _categoryRepository.GetAll();
+            
+            return _mapper.Map<List<CategoryModel>>(categories);
         }
 
         public IEnumerable<Guid> GetCategoryAndChildrenIds(Guid categoryId)

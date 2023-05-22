@@ -1,9 +1,11 @@
-﻿using Shop.DataAccess.Entities;
+﻿using Shop.BLL.Models;
 
 namespace Shop.BLL.Services
 {
     public interface IProductsService
     {
-        IEnumerable<Product> GetProductByCategoryId(Guid categoryId);
+        IEnumerable<ProductModel> GetProductByCategoryId(Guid categoryId);
+
+        ProductModel? GetProduct(Guid productId);
     }
 }
