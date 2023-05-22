@@ -14,6 +14,9 @@ namespace Shop.DataAccess.Repositories
         {
             var categories = _context.Categories
                 .Include(c => c.ChildCategories)
+                .ThenInclude(c => c.ChildCategories)
+                .ThenInclude(c => c.ChildCategories)
+                .Where(c => c.ParentCategoryId == null)
                 .ToList();
 
             return categories;
@@ -23,6 +26,9 @@ namespace Shop.DataAccess.Repositories
         {
             var category = _context.Categories
                 .Include(c => c.ChildCategories)
+                .ThenInclude(c => c.ChildCategories)
+                .ThenInclude(c => c.ChildCategories)
+                .Where(c => c.ParentCategoryId == null)
                 .FirstOrDefault(c => c.Id == id);
 
             return category;
