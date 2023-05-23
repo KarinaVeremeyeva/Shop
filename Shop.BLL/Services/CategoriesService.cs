@@ -30,7 +30,7 @@ namespace Shop.BLL.Services
             var category = _categoryRepository.GetById(categoryId);
             if (category == null)
             {
-                throw new ArgumentException(nameof(category), "Entity was not found");
+                throw new ArgumentException("Entity was not found", nameof(category));
             }
             var categoryAndChildrenIds = GetCategoryAndChildrenIds(category);
 
