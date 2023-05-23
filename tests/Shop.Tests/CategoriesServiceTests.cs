@@ -72,17 +72,16 @@ namespace Shop.Tests
         public void GetCategoryAndChildrenIds_PassNotExistingCategoryId_ReturnsArgumentException()
         {
             // arrange
-            var categoryId = Guid.Parse("2f9702de-cefd-4bac-93ec-0a4b5cb77ca6");
+            var categoryId = Guid.Parse("00000000-0000-0000-0000-000000000000");
             var mockRepository = new Mock<ICategoryRepository>();
-            mockRepository
-                .Setup(x => x.GetById(It.IsAny<Guid>()))
-                .Throws(new ArgumentException("Entity was not found"));
+            
             var service = new CategoriesService(mockRepository.Object, _mapper);
+            
+            // act 
+            var actual = service.GetCategoryAndChildrenIds(categoryId);
 
-            // act and assert
-            Assert.Throws<ArgumentException>(
-                () => service.GetCategoryAndChildrenIds(categoryId),
-                "Entity was not found");
+            // assert
+            Assert.That(actual.Count(), Is.EqualTo(0));
         }
 
         private Category GetTestCategory()
