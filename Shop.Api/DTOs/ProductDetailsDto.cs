@@ -1,4 +1,4 @@
-namespace Shop.BLL
+namespace Shop.Api.DTOs
 {
     public class ProductDetailsDto
     {

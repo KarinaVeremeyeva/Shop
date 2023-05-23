@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Shop.DataAccess;
 
@@ -11,9 +12,11 @@ using Shop.DataAccess;
 namespace Shop.DataAccess.Migrations
 {
     [DbContext(typeof(ShopContext))]
-    partial class ShopContextModelSnapshot : ModelSnapshot
+    [Migration("20230522134924_SeedDatabase")]
+    partial class SeedData2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -384,16 +387,17 @@ namespace Shop.DataAccess.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("DetailId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<Guid>("DetailsId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("DetailId");
 
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ProductId", "DetailId");
+                    b.HasKey("ProductId", "DetailsId");
 
-                    b.HasIndex("DetailId");
+                    b.HasIndex("DetailsId");
 
                     b.ToTable("ProductDetails");
 
@@ -401,73 +405,73 @@ namespace Shop.DataAccess.Migrations
                         new
                         {
                             ProductId = new Guid("86ca08b6-3b59-4046-9c3f-260f0631ceb8"),
-                            DetailId = new Guid("f3f27ab2-e1f8-4ba4-a4f2-2e5b97bb769b"),
+                            DetailsId = new Guid("f3f27ab2-e1f8-4ba4-a4f2-2e5b97bb769b"),
                             Value = "Apple"
                         },
                         new
                         {
                             ProductId = new Guid("86ca08b6-3b59-4046-9c3f-260f0631ceb8"),
-                            DetailId = new Guid("c621e56a-5546-49f1-bb69-fd97c9a00fe1"),
+                            DetailsId = new Guid("c621e56a-5546-49f1-bb69-fd97c9a00fe1"),
                             Value = "6.1"
                         },
                         new
                         {
                             ProductId = new Guid("86ca08b6-3b59-4046-9c3f-260f0631ceb8"),
-                            DetailId = new Guid("0d517bcf-374b-4095-9e7c-4187bd814e27"),
+                            DetailsId = new Guid("0d517bcf-374b-4095-9e7c-4187bd814e27"),
                             Value = "Midnight"
                         },
                         new
                         {
                             ProductId = new Guid("86ca08b6-3b59-4046-9c3f-260f0631ceb8"),
-                            DetailId = new Guid("fdfa2737-bf8f-4fb8-9477-bfa52cbd198c"),
+                            DetailsId = new Guid("fdfa2737-bf8f-4fb8-9477-bfa52cbd198c"),
                             Value = "12"
                         },
                         new
                         {
                             ProductId = new Guid("75ac7087-0031-4895-8a7c-60e87b96a5d7"),
-                            DetailId = new Guid("f3f27ab2-e1f8-4ba4-a4f2-2e5b97bb769b"),
+                            DetailsId = new Guid("f3f27ab2-e1f8-4ba4-a4f2-2e5b97bb769b"),
                             Value = "Samsung"
                         },
                         new
                         {
                             ProductId = new Guid("75ac7087-0031-4895-8a7c-60e87b96a5d7"),
-                            DetailId = new Guid("c621e56a-5546-49f1-bb69-fd97c9a00fe1"),
+                            DetailsId = new Guid("c621e56a-5546-49f1-bb69-fd97c9a00fe1"),
                             Value = "6.4"
                         },
                         new
                         {
                             ProductId = new Guid("75ac7087-0031-4895-8a7c-60e87b96a5d7"),
-                            DetailId = new Guid("0d517bcf-374b-4095-9e7c-4187bd814e27"),
+                            DetailsId = new Guid("0d517bcf-374b-4095-9e7c-4187bd814e27"),
                             Value = "Black"
                         },
                         new
                         {
                             ProductId = new Guid("75ac7087-0031-4895-8a7c-60e87b96a5d7"),
-                            DetailId = new Guid("fdfa2737-bf8f-4fb8-9477-bfa52cbd198c"),
+                            DetailsId = new Guid("fdfa2737-bf8f-4fb8-9477-bfa52cbd198c"),
                             Value = "64"
                         },
                         new
                         {
                             ProductId = new Guid("7cda37ad-0d0a-4685-8104-3f435f5eeaf6"),
-                            DetailId = new Guid("f3f27ab2-e1f8-4ba4-a4f2-2e5b97bb769b"),
+                            DetailsId = new Guid("f3f27ab2-e1f8-4ba4-a4f2-2e5b97bb769b"),
                             Value = "Xiaomi"
                         },
                         new
                         {
                             ProductId = new Guid("7cda37ad-0d0a-4685-8104-3f435f5eeaf6"),
-                            DetailId = new Guid("c621e56a-5546-49f1-bb69-fd97c9a00fe1"),
+                            DetailsId = new Guid("c621e56a-5546-49f1-bb69-fd97c9a00fe1"),
                             Value = "6.67"
                         },
                         new
                         {
                             ProductId = new Guid("7cda37ad-0d0a-4685-8104-3f435f5eeaf6"),
-                            DetailId = new Guid("0d517bcf-374b-4095-9e7c-4187bd814e27"),
+                            DetailsId = new Guid("0d517bcf-374b-4095-9e7c-4187bd814e27"),
                             Value = "Black"
                         },
                         new
                         {
                             ProductId = new Guid("7cda37ad-0d0a-4685-8104-3f435f5eeaf6"),
-                            DetailId = new Guid("fdfa2737-bf8f-4fb8-9477-bfa52cbd198c"),
+                            DetailsId = new Guid("fdfa2737-bf8f-4fb8-9477-bfa52cbd198c"),
                             Value = "50"
                         });
                 });
@@ -497,7 +501,7 @@ namespace Shop.DataAccess.Migrations
                 {
                     b.HasOne("Shop.DataAccess.Entities.Detail", "Detail")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("DetailId")
+                        .HasForeignKey("DetailsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
