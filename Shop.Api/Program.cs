@@ -11,7 +11,6 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        
         builder.Services.AddDbContext<ShopContext>(options =>
         {
             options.UseSqlServer(connectionString);

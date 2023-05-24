@@ -49,14 +49,14 @@ namespace Shop.DataAccess
                     j => j
                         .HasOne(x => x.Detail)
                         .WithMany(x => x.ProductDetails)
-                        .HasForeignKey(x => x.DetailsId),
+                        .HasForeignKey(x => x.DetailId),
                     j => j
                         .HasOne(x => x.Product)
                         .WithMany(x => x.ProductDetails)
                         .HasForeignKey(x => x.ProductId),
                     j => 
                     {
-                        j.HasKey(x => new { x.ProductId, x. DetailsId });
+                        j.HasKey(x => new { x.ProductId, x. DetailId });
                     });
 
             modelBuilder.Entity<Product>()
