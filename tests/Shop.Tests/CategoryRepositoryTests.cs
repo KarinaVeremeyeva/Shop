@@ -27,13 +27,9 @@ namespace Shop.Tests
         public void GetById_GetCategoryById_ReturnsCategory()
         {
             // arrange
-            var category = new Category()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Category",
-                Description = "Description 1",
-                ParentCategoryId = null
-            };
+            var categoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6");
+            var category = TestData.GetTestCategory(categoryId);
+
             Context.Categories.Add(category);
             Context.SaveChanges();
 
@@ -46,26 +42,64 @@ namespace Shop.Tests
         }
 
         [Test]
+        public void GetById_PassNotExistingCategoryId_ReturnsNull()
+        {
+            // arrange
+            var categoryId = Guid.Parse("00000000-0000-0000-0000-000000000000");
+
+            // act
+            Category? expected = null;
+            var actual = CategoryRepository.GetById(categoryId);
+
+            // assert
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void GetById_GetChildCategoryById_ReturnsCategory()
+        {
+            // arrange
+            var categoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6");
+            var category = TestData.GetTestCategory(categoryId);
+            var childCategoryId = category.ChildCategories.First().Id;
+
+            Context.Categories.Add(category);
+            Context.SaveChanges();
+
+            // act
+            var expected = category.ChildCategories.First().Id;
+            var actual = CategoryRepository.GetById(childCategoryId)?.Id;
+
+            // assert
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void GetById_GetGrandChildCategoryById_ReturnsCategory()
+        {
+            // arrange
+            var categoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6");
+            var category = TestData.GetTestCategory(categoryId);
+            var grandChildCategoryId = category
+                .ChildCategories.First()
+                .ChildCategories.First().Id;
+
+            Context.Categories.Add(category);
+            Context.SaveChanges();
+
+            // act
+            var expected = grandChildCategoryId;
+            var actual = CategoryRepository.GetById(grandChildCategoryId)?.Id;
+
+            // assert
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
         public void GetAll_GetAllCategories_ReturnsAllCategories()
         {
             // arrange
-            var categories = new List<Category>()
-            {
-                new Category
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "category 1",
-                    Description = "Description 1",
-                    ParentCategoryId = null
-                },
-                new Category
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "category 2",
-                    Description = "Description 2",
-                    ParentCategoryId = null
-                }
-            };
+            var categories = TestData.GetTestCategories();
 
             Context.Categories.AddRange(categories);
             Context.SaveChanges();
@@ -82,12 +116,9 @@ namespace Shop.Tests
         public void Add_AddCategory_CategoryWasSaved()
         {
             // arrange
-            var category = new Category()
-            {
-                Id = Guid.Parse("45fd40b8-146d-4a5b-a3a3-6366fc74d37e"),
-                Name = "Category 1",
-                Description = "Description 1",
-            };
+            var categoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6");
+            var category = TestData.GetTestCategory(categoryId);
+
             CategoryRepository.Add(category);
 
             // act
@@ -102,12 +133,9 @@ namespace Shop.Tests
         public void Update_UpdateCategory_CategoryWasUpdated()
         {
             // arrange
-            var category = new Category()
-            {
-                Id = Guid.Parse("45fd40b8-146d-4a5b-a3a3-6366fc74d37e"),
-                Name = "Category 1",
-                Description = "Description 1",
-            };
+            var categoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6");
+            var category = TestData.GetTestCategory(categoryId);
+
             Context.Categories.Add(category);
             Context.SaveChanges();
 
@@ -127,12 +155,9 @@ namespace Shop.Tests
         public void Remove_RemoveCategory_CategoryWasRemoveed()
         {
             // arrange
-            var category = new Category()
-            {
-                Id = Guid.Parse("45fd40b8-146d-4a5b-a3a3-6366fc74d37e"),
-                Name = "Category 1",
-                Description = "Description 1",
-            };
+            var categoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6");
+            var category = TestData.GetTestCategory(categoryId);
+
             Context.Categories.Add(category);
             Context.SaveChanges();
             CategoryRepository.Remove(category.Id);
@@ -140,6 +165,20 @@ namespace Shop.Tests
             // act
             Category? expected = null;
             var actual = Context.Categories.FirstOrDefault(c => c.Id == category.Id);
+
+            // assert
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void Remove_RemoveNotExistingCategory_CategoryWasNotRemoved()
+        {
+            var categoryId = Guid.Parse("00000000-0000-0000-0000-000000000000");
+            CategoryRepository.Remove(categoryId);
+
+            // act
+            Category? expected = null;
+            var actual = Context.Categories.FirstOrDefault(c => c.Id == categoryId);
 
             // assert
             Assert.That(actual, Is.EqualTo(expected));

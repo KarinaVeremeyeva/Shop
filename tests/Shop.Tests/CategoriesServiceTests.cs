@@ -2,7 +2,6 @@
 using Moq;
 using Shop.BLL;
 using Shop.BLL.Services;
-using Shop.DataAccess.Entities;
 using Shop.DataAccess.Repositories;
 
 namespace Shop.Tests
@@ -27,7 +26,7 @@ namespace Shop.Tests
         public void GetCategories_GetAllCategories_ReturnsCtaegories()
         {
             // arrange
-            var testCategories = GetTestCategories();
+            var testCategories = TestData.GetTestCategories();
 
             var mockRepository = new Mock<ICategoryRepository>();
             mockRepository
@@ -48,28 +47,32 @@ namespace Shop.Tests
         {
             // arrange
             var categoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6");
-            var testCategories = GetTestCategories();
-            var category = GetTestCategory();
+            var category = TestData.GetTestCategory(categoryId);
 
             var mockRepository = new Mock<ICategoryRepository>();
             mockRepository
                 .Setup(x => x.GetById(categoryId))
                 .Returns(category);
-
             var service = new CategoriesService(mockRepository.Object, _mapper);
 
-            var ids = category.ChildCategories.Select(x => x.Id);
-            var expected = ids.Concat(new List<Guid> { categoryId });     
+            var expected = new List<Guid>
+            {
+                Guid.Parse("a79fd279-390d-4416-ba08-c3239bf7ed37"),
+                Guid.Parse("e77a4e6e-a0f0-4b1c-988e-adeb182a059c"),
+                Guid.Parse("0865d2ff-5602-40df-9466-26b2fef9785e"),
+                categoryId
+            };
 
             // act
             var actual = service.GetCategoryAndChildrenIds(categoryId);
 
             // assert
+            Assert.That(actual.Count(), Is.EqualTo(expected.Count()));
             Assert.That(actual.First(), Is.EqualTo(expected.First()));
         }
 
         [Test]
-        public void GetCategoryAndChildrenIds_PassNotExistingCategoryId_ReturnsArgumentException()
+        public void GetCategoryAndChildrenIds_PassNotExistingCategoryId_ReturnsEmptyList()
         {
             // arrange
             var categoryId = Guid.Parse("00000000-0000-0000-0000-000000000000");
@@ -82,81 +85,6 @@ namespace Shop.Tests
 
             // assert
             Assert.That(actual.Count(), Is.EqualTo(0));
-        }
-
-        private Category GetTestCategory()
-        {
-            var category = new Category
-            {
-                Id = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6"),
-                Name = "Category 1",
-                Description = "Description 1",
-                ChildCategories = {
-                        new Category
-                        {
-                            Id = Guid.Parse("0865d2ff-5602-40df-9466-26b2fef9785e"),
-                            Name = "Child 1",
-                            Description = "Description 2",
-                            ParentCategoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6")
-                        },
-                        new Category
-                        {
-                            Id = Guid.Parse("e77a4e6e-a0f0-4b1c-988e-adeb182a059c"),
-                            Name = "Child 2",
-                            Description = "Description 3",
-                            ParentCategoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6"),
-                            ChildCategories = {
-                                new Category
-                                {
-                                    Id = Guid.Parse("a79fd279-390d-4416-ba08-c3239bf7ed37"),
-                                    Name = "Child 2.1",
-                                    Description = "Description 4",
-                                }
-                            }
-                        }
-                    }
-            };
-
-            return category;
-        }
-
-        private IEnumerable<Category> GetTestCategories()
-        {
-            var categories = new List<Category>()
-            {
-                new Category
-                {
-                    Id = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6"),
-                    Name = "Category 1",
-                    Description = "Description 1",
-                    ChildCategories = {
-                        new Category
-                        {
-                            Id = Guid.Parse("0865d2ff-5602-40df-9466-26b2fef9785e"),
-                            Name = "Child 1",
-                            Description = "Description 2",
-                            ParentCategoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6")
-                        },
-                        new Category
-                        {
-                            Id = Guid.Parse("e77a4e6e-a0f0-4b1c-988e-adeb182a059c"),
-                            Name = "Child 2",
-                            Description = "Description 3",
-                            ParentCategoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6"),
-                            ChildCategories = {
-                                new Category
-                                {
-                                    Id = Guid.Parse("a79fd279-390d-4416-ba08-c3239bf7ed37"),
-                                    Name = "Child 2.1",
-                                    Description = "Description 4",
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-
-            return categories;
         }
     }
 }
