@@ -22,7 +22,11 @@ namespace Shop.DataAccess.Repositories
 
         public virtual void Remove(Guid id)
         {
-            var entity = _entities.Find(id);
+            var entity = _entities.SingleOrDefault(entity => entity.Id == id);
+            if (entity == null)
+            {
+                return;
+            }
             _entities.Remove(entity);
             _context.SaveChanges();
         }
