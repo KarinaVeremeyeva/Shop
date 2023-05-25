@@ -33,12 +33,13 @@ namespace Shop.Tests
             Context.Categories.Add(category);
             Context.SaveChanges();
 
-            // act
             var expected = category.Id;
-            var actual = CategoryRepository.GetById(category.Id)?.Id;
+
+            // act
+            var actual = CategoryRepository.GetById(category.Id);
             
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual.Id, Is.EqualTo(expected));
         }
 
         [Test]
@@ -46,9 +47,9 @@ namespace Shop.Tests
         {
             // arrange
             var categoryId = Guid.Parse("00000000-0000-0000-0000-000000000000");
+            Category? expected = null;
 
             // act
-            Category? expected = null;
             var actual = CategoryRepository.GetById(categoryId);
 
             // assert
@@ -66,12 +67,13 @@ namespace Shop.Tests
             Context.Categories.Add(category);
             Context.SaveChanges();
 
+            var expected = category.ChildCategories.First();
+
             // act
-            var expected = category.ChildCategories.First().Id;
-            var actual = CategoryRepository.GetById(childCategoryId)?.Id;
+            var actual = CategoryRepository.GetById(childCategoryId);
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual.Id, Is.EqualTo(expected.Id));
         }
 
         [Test]
@@ -80,19 +82,18 @@ namespace Shop.Tests
             // arrange
             var categoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6");
             var category = TestData.GetTestCategory(categoryId);
-            var grandChildCategoryId = category
-                .ChildCategories.First()
-                .ChildCategories.First().Id;
+            var grandChildCategoryId = Guid.Parse("a79fd279-390d-4416-ba08-c3239bf7ed37");
 
             Context.Categories.Add(category);
             Context.SaveChanges();
 
-            // act
             var expected = grandChildCategoryId;
-            var actual = CategoryRepository.GetById(grandChildCategoryId)?.Id;
+
+            // act
+            var actual = CategoryRepository.GetById(grandChildCategoryId);
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual.Id, Is.EqualTo(expected));
         }
 
         [Test]
@@ -104,12 +105,13 @@ namespace Shop.Tests
             Context.Categories.AddRange(categories);
             Context.SaveChanges();
 
+            var expected = Context.Categories;
+
             // act
-            var expected = Context.Categories.First().Id;
-            var actual = CategoryRepository.GetAll().First().Id;
+            var actual = CategoryRepository.GetAll();
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual.First().Id, Is.EqualTo(expected.First().Id));
         }
 
         [Test]
@@ -121,12 +123,13 @@ namespace Shop.Tests
 
             CategoryRepository.Add(category);
 
-            // act
             var expected = category.Id;
-            var actual = Context.Categories.Where(c => c.Id == category.Id).First().Id;
+
+            // act
+            var actual = Context.Categories.Where(c => c.Id == category.Id).First();
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual.Id, Is.EqualTo(expected));
         }
 
         [Test]
@@ -142,13 +145,13 @@ namespace Shop.Tests
             var categoryToUpdate = Context.Categories.First(c => c.Id == category.Id);
             categoryToUpdate.Name = "Updated Category";
             CategoryRepository.Update(categoryToUpdate);
+            var expected = category;
 
             // act
-            var expected = category.Name;
-            var actual = Context.Categories.Where(c => c.Id == category.Id).First().Name;
+            var actual = Context.Categories.Where(c => c.Id == category.Id).First();
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual.Name, Is.EqualTo(expected.Name));
         }
 
         [Test]
@@ -162,8 +165,9 @@ namespace Shop.Tests
             Context.SaveChanges();
             CategoryRepository.Remove(category.Id);
 
-            // act
             Category? expected = null;
+
+            // act
             var actual = Context.Categories.FirstOrDefault(c => c.Id == category.Id);
 
             // assert
@@ -173,11 +177,12 @@ namespace Shop.Tests
         [Test]
         public void Remove_RemoveNotExistingCategory_CategoryWasNotRemoved()
         {
+            // arrange
             var categoryId = Guid.Parse("00000000-0000-0000-0000-000000000000");
             CategoryRepository.Remove(categoryId);
+            Category? expected = null;
 
             // act
-            Category? expected = null;
             var actual = Context.Categories.FirstOrDefault(c => c.Id == categoryId);
 
             // assert

@@ -33,12 +33,13 @@ namespace Shop.Tests
             Context.Products.Add(product);
             Context.SaveChanges();
 
-            // act
             var expected = product.Id;
-            var actual = ProductRepository.GetById(product.Id)?.Id;
+
+            // act
+            var actual = ProductRepository.GetById(product.Id);
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual.Id, Is.EqualTo(expected));
         }
 
         [Test]
@@ -46,9 +47,9 @@ namespace Shop.Tests
         {
             // arrange
             var productId = Guid.Parse("00000000-0000-0000-0000-000000000000");
+            Product? expected = null;
 
             // act
-            Product? expected = null;
             var actual = ProductRepository.GetById(productId);
 
             // assert
@@ -64,12 +65,13 @@ namespace Shop.Tests
             Context.Products.AddRange(products);
             Context.SaveChanges();
 
+            var expected = Context.Products;
+
             // act
-            var expected = Context.Products.First().Id;
-            var actual = ProductRepository.GetAll().First().Id;
+            var actual = ProductRepository.GetAll();
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual.First().Id, Is.EqualTo(expected.First().Id));
         }
 
         [Test]
@@ -141,12 +143,13 @@ namespace Shop.Tests
 
             ProductRepository.Add(product);
 
-            // act
             var expected = product.Id;
-            var actual = Context.Products.Where(p => p.Id == product.Id).First().Id;
+
+            // act
+            var actual = Context.Products.Where(p => p.Id == product.Id).First();
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual.Id, Is.EqualTo(expected));
         }
 
         [Test]
@@ -163,12 +166,13 @@ namespace Shop.Tests
             productToUpdate.Name = "Updated Product";
             ProductRepository.Update(productToUpdate);
 
+            var expected = product;
+
             // act
-            var expected = product.Name;
-            var actual = Context.Products.Where(p => p.Id == product.Id).First().Name;
+            var actual = Context.Products.Where(p => p.Id == product.Id).First();
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual.Name, Is.EqualTo(expected.Name));
         }
 
         [Test]
@@ -182,8 +186,9 @@ namespace Shop.Tests
             Context.SaveChanges();
             ProductRepository.Remove(product.Id);
 
-            // act
             Product? expected = null;
+
+            // act
             var actual = Context.Products.FirstOrDefault(p => p.Id == product.Id);
 
             // assert
@@ -196,9 +201,9 @@ namespace Shop.Tests
             // arrange
             var productId = Guid.Parse("00000000-0000-0000-0000-000000000000");
             ProductRepository.Remove(productId);
+            Product? expected = null;
 
             // act
-            Product? expected = null;
             var actual = Context.Products.FirstOrDefault(p => p.Id == productId);
 
             // assert

@@ -25,7 +25,7 @@ namespace Shop.Tests
         [Test]
         public void GetProduct_GetProductById_ReturnsProduct()
         {
-            // ararnge
+            // arrange
             var productId = Guid.Parse("ee83d6ba-c84b-4a60-99d8-76a9833ca11a");
             var testProduct = TestData.GetTestProduct(productId);
 
@@ -39,10 +39,10 @@ namespace Shop.Tests
             var service = new ProductsService(mockService.Object, mockRepository.Object, _mapper);
 
             // act
-            var actual = service.GetProduct(productId)?.Id;
+            var actual = service.GetProduct(productId);
 
             // assert
-            Assert.That(actual, Is.EqualTo(testProduct?.Id));
+            Assert.That(actual.Id, Is.EqualTo(testProduct.Id));
         }
 
         [Test]
@@ -51,8 +51,10 @@ namespace Shop.Tests
             // arrange
             var testProducts = TestData.GetTestProducts();
             var categoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6");
+            
             var mockRepository = new Mock<IProductRepository>();
-            mockRepository.Setup(x => x.GetProductsByCategoryIds(It.IsAny<IEnumerable<Guid>>()))
+            mockRepository
+                .Setup(x => x.GetProductsByCategoryIds(It.IsAny<IEnumerable<Guid>>()))
                 .Returns(testProducts);
 
             var categoryIds = new List<Guid>
@@ -66,14 +68,14 @@ namespace Shop.Tests
                 .Setup(x => x.GetCategoryAndChildrenIds(It.IsAny<Guid>()))
                 .Returns(categoryIds);
 
-            // act
             var service = new ProductsService(mockService.Object, mockRepository.Object, _mapper);
+
+            // act
             var actual = service.GetProductByCategoryId(categoryId);
             
-            // asssert
+            // assert
             Assert.That(actual.Count(), Is.EqualTo(testProducts.Count()));
             Assert.That(actual.First().Id, Is.EqualTo(testProducts.First().Id));
-
         }
     }
 }
