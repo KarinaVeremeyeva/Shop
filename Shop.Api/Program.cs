@@ -7,6 +7,8 @@ using Shop.Api;
 
 internal class Program
 {
+    private const string Name = "AllowAnyOrigin";
+
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +25,15 @@ internal class Program
 
         builder.Services.AddAutoMapper(typeof(BusinessLogicProfile), typeof(MappingProfile));
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(Name,
+                builder => builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+        });
+
         builder.Services.AddControllers();
 
         builder.Services.AddEndpointsApiExplorer();
@@ -37,6 +48,8 @@ internal class Program
         }
 
         app.UseHttpsRedirection();
+
+        app.UseCors(Name);
 
         app.UseAuthorization();
 
