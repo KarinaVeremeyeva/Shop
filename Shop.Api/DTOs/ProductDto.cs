@@ -14,6 +14,6 @@ namespace Shop.Api.DTOs
 
         public CategoryDto Category { get; set; }
 
-        public List<DetailsDto> Details { get; set; }
+        public List<DetailDto> Details { get; set; }
     }
 }
