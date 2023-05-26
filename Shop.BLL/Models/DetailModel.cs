@@ -9,5 +9,7 @@ namespace Shop.BLL.Models
         public string Name { get; set; }
 
         public DetailType Type { get; set; }
+
+        public IEnumerable<ProductDetailModel> ProductDetails { get; set;}
     }
 }

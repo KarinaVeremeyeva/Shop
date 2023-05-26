@@ -33,7 +33,10 @@ namespace Shop.BLL.Services
 
             var productsByCategoryIds = _productRepository.GetProductsByCategoryIds(categoryAndChildrenIds);
 
-            return _mapper.Map<List<ProductModel>>(productsByCategoryIds);
+            var productModels = _mapper.Map<List<ProductModel>>(productsByCategoryIds);
+            productModels.ForEach(p => p.Details.ForEach(d => d.ProductDetails = d.ProductDetails.Where(pd => pd.ProductId == p.Id)));
+
+            return productModels;
         }
     }
 }

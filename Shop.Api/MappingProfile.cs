@@ -13,7 +13,10 @@ namespace Shop.Api
                 .ForMember(
                     dest => dest.Details,
                     opt => opt.MapFrom(src => src.Details));
-            CreateMap<DetailModel, DetailsDto>();
+            CreateMap<DetailModel, DetailDto>()
+                .ForMember(
+                    dest => dest.Value,
+                    opt => opt.MapFrom(src => src.ProductDetails.Single().Value));
         }
     }
 }
