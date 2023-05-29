@@ -6,6 +6,8 @@ using Shop.IdentityApi.Models;
 using Shop.IdentityApi.Services;
 using System.Text;
 
+const string Name = "AllowAnyOrigin";
+
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -37,6 +39,15 @@ builder.Services.AddScoped<IAccoutService, AccountService>();
 
 builder.Services.AddControllers();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(Name,
+        builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .WithExposedHeaders("Authorization"));
+});
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
@@ -48,6 +59,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(Name);
 
 app.UseAuthentication();
 app.UseAuthorization();
