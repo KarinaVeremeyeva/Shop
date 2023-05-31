@@ -33,7 +33,6 @@ namespace Shop.BLL.Services
                     Id = Guid.NewGuid(),
                     UserEmail = email,
                     ProductId = productId,
-                    Product = _productRepository.GetById(productId),
                     Quantity = 1
                 };
 
@@ -42,6 +41,7 @@ namespace Shop.BLL.Services
             else
             {
                 cartItem.Quantity++;
+                _cartItemsRepository.Update(cartItem);
             }
         }
 
@@ -54,7 +54,16 @@ namespace Shop.BLL.Services
             {
                 return;
             }
-            cartItem.Quantity--;
+
+            if (cartItem.Quantity > 1)
+            {
+                cartItem.Quantity--;
+                _cartItemsRepository.Update(cartItem);
+            }
+            else
+            {
+                _cartItemsRepository.Remove(cartItem.Id);
+            }
         }
 
         public List<CartItemModel> GetCartItems(string email)
