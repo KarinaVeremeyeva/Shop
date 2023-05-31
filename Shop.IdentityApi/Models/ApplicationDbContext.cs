@@ -8,7 +8,7 @@ namespace Shop.IdentityApi.Models
         public ApplicationDbContext(DbContextOptions options)
             : base(options)
         {
-            Database.EnsureCreated();
+            Database.Migrate();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

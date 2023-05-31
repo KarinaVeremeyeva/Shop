@@ -26,13 +26,11 @@ namespace Shop.IdentityApi.Controllers
             {
                 return BadRequest();
             }
-            else
-            {
-                var token = _tokenService.CreateToken(loginModel.Username);
-                Response.Headers.Add("Authorization", token);
 
-                return Ok();
-            }
+            var token = _tokenService.CreateToken(loginModel.Username);
+            Response.Headers.Add("Authorization", token);
+
+            return Ok();
         }
 
         [HttpGet("logout")]
