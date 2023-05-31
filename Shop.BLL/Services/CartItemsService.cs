@@ -23,6 +23,9 @@ namespace Shop.BLL.Services
 
         public void AddToCart(Guid productId, string email)
         {
+            var checkProductId = _productRepository.GetById(productId)
+                ?? throw new ArgumentException($"Product {productId} doen't exist.");
+
             var cartItem = _cartItemsRepository.GetAll()
                 .SingleOrDefault(c => c.UserEmail == email && c.ProductId == productId);
             
@@ -76,20 +79,20 @@ namespace Shop.BLL.Services
 
         public decimal GetTotalPrice(string email)
         {
-            decimal totalPrice = 0;
-            totalPrice = _cartItemsRepository.GetAll()
+            var totalPrice = _cartItemsRepository.GetAll()
                 .Where(c => c.UserEmail == email)
-                .Select(c => c.Quantity * c.Product.Price).Sum();
+                .Select(c => c.Quantity * c.Product.Price)
+                .Sum();
 
             return totalPrice;
         }
 
         public int GetTotalCount(string email)
         {
-            var totalCount = 0;
-            totalCount = _cartItemsRepository.GetAll()
+            var totalCount = _cartItemsRepository.GetAll()
                 .Where(c => c.UserEmail == email)
-                .Select(c => c.Quantity).Sum();
+                .Select(c => c.Quantity)
+                .Sum();
 
             return totalCount;
         }

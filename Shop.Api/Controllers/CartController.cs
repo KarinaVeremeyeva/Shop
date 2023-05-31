@@ -46,26 +46,6 @@ namespace Shop.Api.Controllers
             var items = _cartItemsService.GetCartItems(email);
 
             return _mapper.Map<List<CartItemDto>>(items);
-
-        }
-
-        [HttpGet("price")]
-        public decimal GetTotalPrice()
-        {
-            var email = ParseToken();
-            var totalPrice = _cartItemsService.GetTotalPrice(email);
-
-            return totalPrice;
-        }
-
-
-        [HttpGet("count")]
-        public int GetTotalCount()
-        {
-            var email = ParseToken();
-            var totalCount = _cartItemsService.GetTotalCount(email);
-
-            return totalCount;
         }
 
         private string ParseToken()
