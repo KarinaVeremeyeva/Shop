@@ -19,6 +19,8 @@ namespace Shop.DataAccess
 
         public DbSet<ProductDetail> ProductDetails { get; set; }
 
+        public DbSet<CartItem> ShoppingCartItems { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(
