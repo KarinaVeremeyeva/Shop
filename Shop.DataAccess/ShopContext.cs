@@ -8,7 +8,7 @@ namespace Shop.DataAccess
         public ShopContext(DbContextOptions<ShopContext> options)
             : base(options)
         {
-            Database.EnsureCreated();
+            Database.Migrate();
         }
 
         public DbSet<Category> Categories => Set<Category>();
