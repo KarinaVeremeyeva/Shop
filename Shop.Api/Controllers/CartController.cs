@@ -39,6 +39,15 @@ namespace Shop.Api.Controllers
             return Ok();
         }
 
+        [HttpPut("{productId}/reduce")]
+        public IActionResult ReduceProductCount(Guid productId)
+        {
+            var email = ParseToken();
+            _cartItemsService.ReduceProductCount(productId, email);
+
+            return Ok();
+        }
+
         [HttpGet]
         public IEnumerable<CartItemDto> GetCartItems()
         {

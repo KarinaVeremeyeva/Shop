@@ -58,6 +58,19 @@ namespace Shop.BLL.Services
                 return;
             }
 
+            _cartItemsRepository.Remove(cartItem.Id);
+        }
+
+        public void ReduceProductCount(Guid productId, string email)
+        {
+            var cartItem = _cartItemsRepository.GetAll()
+                .SingleOrDefault(c => c.UserEmail == email && c.ProductId == productId);
+
+            if (cartItem == null)
+            {
+                return;
+            }
+
             if (cartItem.Quantity > 1)
             {
                 cartItem.Quantity--;
