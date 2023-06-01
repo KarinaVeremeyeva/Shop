@@ -85,7 +85,48 @@ namespace Shop.Tests
                     CategoryId = Guid.Parse("d1ca19e4-ec09-4810-9929-718d2f2d3a6b"),
                 }
             };
+
             return products;
+        }
+
+        public static CartItem GetTestCartItem(Guid cartItemId)
+        {
+            return GetTestCartItems().First(x => x.Id == cartItemId);
+        }
+
+        public static IEnumerable<CartItem> GetTestCartItems()
+        {
+            var cartItems = new List<CartItem>
+            {
+                new CartItem
+                {
+                    Id = Guid.Parse("d787bb8f-bc03-4e54-baed-dc70d17e3f39"),
+                    Quantity = 2,
+                    UserEmail = "test@email",
+                    Product = new Product
+                    {
+                        Id = Guid.Parse("a79fd279-390d-4416-ba08-c3239bf7ed37"),
+                        Name = "Test product 1",
+                        Price = 100
+                    },
+                    ProductId = Guid.Parse("a79fd279-390d-4416-ba08-c3239bf7ed37"),
+                },
+                new CartItem
+                {
+                    Id = Guid.Parse("61790063-dfdf-4c04-ba9b-fa58ef92d045"),
+                    Quantity = 1,
+                    UserEmail = "test@email",
+                    Product = new Product
+                    {
+                        Id = Guid.Parse("3e7bde91-bed9-4e6e-bd23-c917abc80bea"),
+                        Name = "Test product 2",
+                        Price = 200
+                    },
+                    ProductId = Guid.Parse("3e7bde91-bed9-4e6e-bd23-c917abc80bea"),
+                }
+            };
+
+            return cartItems;
         }
     }
 }

@@ -8,7 +8,10 @@ namespace Shop.DataAccess
         public ShopContext(DbContextOptions<ShopContext> options)
             : base(options)
         {
-            Database.Migrate();
+            if (Database.IsRelational())
+            {
+                Database.Migrate();
+            }          
         }
 
         public DbSet<Category> Categories => Set<Category>();
