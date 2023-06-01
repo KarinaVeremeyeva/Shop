@@ -17,6 +17,7 @@ namespace Shop.Api
                 .ForMember(
                     dest => dest.Value,
                     opt => opt.MapFrom(src => src.ProductDetails.Single().Value));
+            CreateMap<CartItemModel, CartItemDto>();
         }
     }
 }

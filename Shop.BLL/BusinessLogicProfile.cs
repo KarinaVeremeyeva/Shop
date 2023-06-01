@@ -15,6 +15,7 @@ namespace Shop.BLL
                     opt => opt.MapFrom(src => src.Details));
             CreateMap<Detail, DetailModel>();
             CreateMap<ProductDetail, ProductDetailModel>();
+            CreateMap<CartItem, CartItemModel>();
         }
     }
 }

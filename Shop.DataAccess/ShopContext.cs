@@ -8,7 +8,7 @@ namespace Shop.DataAccess
         public ShopContext(DbContextOptions<ShopContext> options)
             : base(options)
         {
-            Database.EnsureCreated();
+            Database.Migrate();
         }
 
         public DbSet<Category> Categories => Set<Category>();
@@ -18,6 +18,8 @@ namespace Shop.DataAccess
         public DbSet<Product> Products { get; set; }
 
         public DbSet<ProductDetail> ProductDetails { get; set; }
+
+        public DbSet<CartItem> ShoppingCartItems { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

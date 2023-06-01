@@ -22,6 +22,29 @@ namespace Shop.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Shop.DataAccess.Entities.CartItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ShoppingCartItems");
+                });
+
             modelBuilder.Entity("Shop.DataAccess.Entities.Category", b =>
                 {
                     b.Property<Guid>("Id")
@@ -470,6 +493,17 @@ namespace Shop.DataAccess.Migrations
                             DetailId = new Guid("fdfa2737-bf8f-4fb8-9477-bfa52cbd198c"),
                             Value = "50"
                         });
+                });
+
+            modelBuilder.Entity("Shop.DataAccess.Entities.CartItem", b =>
+                {
+                    b.HasOne("Shop.DataAccess.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Shop.DataAccess.Entities.Category", b =>
