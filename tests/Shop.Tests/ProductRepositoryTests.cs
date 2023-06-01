@@ -47,13 +47,12 @@ namespace Shop.Tests
         {
             // arrange
             var productId = Guid.Parse("00000000-0000-0000-0000-000000000000");
-            Product? expected = null;
 
             // act
             var actual = ProductRepository.GetById(productId);
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual, Is.Null);
         }
 
         [Test]
@@ -146,7 +145,7 @@ namespace Shop.Tests
             var expected = product.Id;
 
             // act
-            var actual = Context.Products.Where(p => p.Id == product.Id).First();
+            var actual = Context.Products.First(p => p.Id == product.Id);
 
             // assert
             Assert.That(actual.Id, Is.EqualTo(expected));
@@ -169,7 +168,7 @@ namespace Shop.Tests
             var expected = product;
 
             // act
-            var actual = Context.Products.Where(p => p.Id == product.Id).First();
+            var actual = Context.Products.First(p => p.Id == product.Id);
 
             // assert
             Assert.That(actual.Name, Is.EqualTo(expected.Name));
@@ -186,13 +185,11 @@ namespace Shop.Tests
             Context.SaveChanges();
             ProductRepository.Remove(product.Id);
 
-            Product? expected = null;
-
             // act
             var actual = Context.Products.FirstOrDefault(p => p.Id == product.Id);
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual, Is.Null);
         }
 
         [Test]
@@ -201,13 +198,12 @@ namespace Shop.Tests
             // arrange
             var productId = Guid.Parse("00000000-0000-0000-0000-000000000000");
             ProductRepository.Remove(productId);
-            Product? expected = null;
 
             // act
             var actual = Context.Products.FirstOrDefault(p => p.Id == productId);
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual, Is.Null);
         }
 
         [TearDown]

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop.DataAccess;
-using Shop.DataAccess.Entities;
 using Shop.DataAccess.Repositories;
 
 namespace Shop.Tests
@@ -47,13 +46,12 @@ namespace Shop.Tests
         {
             // arrange
             var cartItemId = Guid.Parse("00000000-0000-0000-0000-000000000000");
-            CartItem? expected = null;
 
             // act
             var actual = CartItemRepository.GetById(cartItemId);
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual, Is.Null);
         }
 
         [Test]
@@ -85,7 +83,7 @@ namespace Shop.Tests
             var expected = cartItem.Id;
 
             // act
-            var actual = Context.ShoppingCartItems.Where(c => c.Id == cartItem.Id).First();
+            var actual = Context.ShoppingCartItems.First(c => c.Id == cartItem.Id);
 
             // assert
             Assert.That(actual.Id, Is.EqualTo(expected));
@@ -108,7 +106,7 @@ namespace Shop.Tests
             var expected = cartItem;
 
             // act
-            var actual = Context.ShoppingCartItems.Where(c => c.Id == cartItem.Id).First();
+            var actual = Context.ShoppingCartItems.First(c => c.Id == cartItem.Id);
 
             // assert
             Assert.That(actual.Quantity, Is.EqualTo(expected.Quantity));
@@ -125,13 +123,11 @@ namespace Shop.Tests
             Context.SaveChanges();
             CartItemRepository.Remove(cartItem.Id);
 
-            CartItem? expected = null;
-
             // act
             var actual = Context.ShoppingCartItems.FirstOrDefault(c => c.Id == cartItem.Id);
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual, Is.Null);
         }
 
         [Test]
@@ -140,13 +136,12 @@ namespace Shop.Tests
             // arrange
             var cartItemId = Guid.Parse("00000000-0000-0000-0000-000000000000");
             CartItemRepository.Remove(cartItemId);
-            CartItem? expected = null;
 
             // act
             var actual = Context.ShoppingCartItems.FirstOrDefault(c => c.Id == cartItemId);
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual, Is.Null);
         }
 
         [TearDown]

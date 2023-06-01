@@ -47,13 +47,12 @@ namespace Shop.Tests
         {
             // arrange
             var categoryId = Guid.Parse("00000000-0000-0000-0000-000000000000");
-            Category? expected = null;
 
             // act
             var actual = CategoryRepository.GetById(categoryId);
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual, Is.Null);
         }
 
         [Test]
@@ -126,7 +125,7 @@ namespace Shop.Tests
             var expected = category.Id;
 
             // act
-            var actual = Context.Categories.Where(c => c.Id == category.Id).First();
+            var actual = Context.Categories.First(c => c.Id == category.Id);
 
             // assert
             Assert.That(actual.Id, Is.EqualTo(expected));
@@ -148,7 +147,7 @@ namespace Shop.Tests
             var expected = category;
 
             // act
-            var actual = Context.Categories.Where(c => c.Id == category.Id).First();
+            var actual = Context.Categories.First(c => c.Id == category.Id);
 
             // assert
             Assert.That(actual.Name, Is.EqualTo(expected.Name));
@@ -165,13 +164,11 @@ namespace Shop.Tests
             Context.SaveChanges();
             CategoryRepository.Remove(category.Id);
 
-            Category? expected = null;
-
             // act
             var actual = Context.Categories.FirstOrDefault(c => c.Id == category.Id);
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual, Is.Null);
         }
 
         [Test]
@@ -180,13 +177,12 @@ namespace Shop.Tests
             // arrange
             var categoryId = Guid.Parse("00000000-0000-0000-0000-000000000000");
             CategoryRepository.Remove(categoryId);
-            Category? expected = null;
 
             // act
             var actual = Context.Categories.FirstOrDefault(c => c.Id == categoryId);
 
             // assert
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual, Is.Null);
         }
 
         [TearDown]

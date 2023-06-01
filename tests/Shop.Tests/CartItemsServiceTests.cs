@@ -92,8 +92,7 @@ namespace Shop.Tests
             Assert.That(() => service.AddToCart(productId, email),
                 Throws.Exception
                     .TypeOf<ArgumentException>()
-                    .With.Property("Message")
-                    .EqualTo($"Product {productId} doen't exist."));
+                    .With.Property("Message").EqualTo($"Product {productId} doen't exist."));
         }
 
         [Test]
@@ -146,7 +145,7 @@ namespace Shop.Tests
         }
 
         [Test]
-        public void ReduceProductCount_ProductQuantityDecreased()
+        public void ReduceProductCount_HasItemWithQuantity2_ProductQuantityDecreased()
         {
             // arrange
             var productId = Guid.Parse("a79fd279-390d-4416-ba08-c3239bf7ed37");
