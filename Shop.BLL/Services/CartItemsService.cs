@@ -21,7 +21,7 @@ namespace Shop.BLL.Services
             _mapper = mapper;
         }
 
-        public void AddToCart(Guid productId, string email)
+        public CartItemModel AddToCart(Guid productId, string email)
         {
             var checkProductId = _productRepository.GetById(productId)
                 ?? throw new ArgumentException($"Product {productId} doen't exist.");
@@ -39,12 +39,19 @@ namespace Shop.BLL.Services
                     Quantity = 1
                 };
 
-                _cartItemsRepository.Add(cartItem);
+                var addedCartItem = _cartItemsRepository.Add(cartItem);
+                var cartItemModel = _mapper.Map<CartItemModel>(addedCartItem);
+
+                return cartItemModel;
             }
             else
             {
                 cartItem.Quantity++;
-                _cartItemsRepository.Update(cartItem);
+
+                var updatedCartItem = _cartItemsRepository.Update(cartItem);
+                var cartItemModel = _mapper.Map<CartItemModel>(updatedCartItem);
+
+                return cartItemModel;
             }
         }
 

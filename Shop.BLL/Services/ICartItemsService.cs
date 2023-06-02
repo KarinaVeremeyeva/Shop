@@ -4,7 +4,7 @@ namespace Shop.BLL.Services
 {
     public interface ICartItemsService
     {
-        void AddToCart(Guid productId, string email);
+        CartItemModel AddToCart(Guid productId, string email);
 
         void RemoveFromCard(Guid productId, string email);
 

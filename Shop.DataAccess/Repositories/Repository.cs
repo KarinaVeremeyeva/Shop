@@ -14,10 +14,12 @@ namespace Shop.DataAccess.Repositories
             _entities = _context.Set<TEntity>();
         }
 
-        public virtual void Add(TEntity entity)
+        public virtual TEntity Add(TEntity entity)
         {
             _entities.Add(entity);
             _context.SaveChanges();
+
+            return entity;
         }
 
         public virtual void Remove(Guid id)
@@ -41,10 +43,12 @@ namespace Shop.DataAccess.Repositories
             return _entities.FirstOrDefault(entity => entity.Id == id);
         }
 
-        public virtual void Update(TEntity entity)
+        public virtual TEntity Update(TEntity entity)
         {
             _entities.Update(entity);
             _context.SaveChanges();
+
+            return entity;
         }
     }
 }
