@@ -39,12 +39,19 @@ namespace Shop.BLL.Services
                     Quantity = 1
                 };
 
-                return _mapper.Map<CartItemModel>(_cartItemsRepository.Add(cartItem));
+                var addedCartItem = _cartItemsRepository.Add(cartItem);
+                var cartItemModel = _mapper.Map<CartItemModel>(addedCartItem);
+
+                return cartItemModel;
             }
             else
             {
                 cartItem.Quantity++;
-                return _mapper.Map<CartItemModel>(_cartItemsRepository.Update(cartItem));
+
+                var updatedCartItem = _cartItemsRepository.Update(cartItem);
+                var cartItemModel = _mapper.Map<CartItemModel>(updatedCartItem);
+
+                return cartItemModel;
             }
         }
 

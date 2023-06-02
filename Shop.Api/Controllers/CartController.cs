@@ -24,9 +24,10 @@ namespace Shop.Api.Controllers
         public IActionResult AddToCart(Guid productId)
         {
             var email = ParseToken();
-            var result = _mapper.Map<CartItemDto>(_cartItemsService.AddToCart(productId, email));
+            var updatedCartItem = _cartItemsService.AddToCart(productId, email);
+            var cartItemDto = _mapper.Map<CartItemDto>(updatedCartItem);
 
-            return Ok(result);
+            return Ok(cartItemDto);
         }
 
         [HttpDelete("{productId}")]
