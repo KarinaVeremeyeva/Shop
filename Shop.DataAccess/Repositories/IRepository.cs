@@ -8,9 +8,9 @@ namespace Shop.DataAccess.Repositories
 
         IEnumerable<TEntity> GetAll();
 
-        void Add(TEntity entity);
+        TEntity Add(TEntity entity);
 
-        void Update(TEntity entity);
+        TEntity Update(TEntity entity);
 
         void Remove(Guid id);
     }

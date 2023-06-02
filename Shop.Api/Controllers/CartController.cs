@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Shop.Api.DTOs;
 using Shop.BLL.Services;
-using Shop.DataAccess.Entities;
 
 namespace Shop.Api.Controllers
 {
@@ -25,9 +24,9 @@ namespace Shop.Api.Controllers
         public IActionResult AddToCart(Guid productId)
         {
             var email = ParseToken();
-            _cartItemsService.AddToCart(productId, email);
+            var result = _mapper.Map<CartItemDto>(_cartItemsService.AddToCart(productId, email));
 
-            return Ok();
+            return Ok(result);
         }
 
         [HttpDelete("{productId}")]
