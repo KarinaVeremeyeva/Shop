@@ -8,5 +8,7 @@ namespace Shop.IdentityApi.Services
         Task<SignInResult> LoginAsync(LoginModel loginModel);
 
         Task LogoutAsync();
+
+        Task<UserDataModel> GetUserData(string token);
     }
 }

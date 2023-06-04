@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shop.DataAccess\Shop.DataAccess.csproj" />
+    <ProjectReference Include="..\Shop.IdentityApi\Shop.IdentityApi.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shop.IdentityApi.Models;
 using Shop.IdentityApi.Services;
+using System.Net.Http.Headers;
 
 namespace Shop.IdentityApi.Controllers
 {
@@ -30,6 +31,8 @@ namespace Shop.IdentityApi.Controllers
             var token = _tokenService.CreateToken(loginModel.Username);
             Response.Headers.Add("Authorization", token);
 
+            Response.Cookies.Append("Access-Token", token, new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Lax });
+
             return Ok();
         }
 
@@ -39,6 +42,22 @@ namespace Shop.IdentityApi.Controllers
             await _accoutService.LogoutAsync();
 
             return Ok();
+        }
+
+        [HttpGet("validate")]
+        public async Task<UserDataModel> GetUserData()
+        {
+            Request.Cookies.TryGetValue("Access-Token", out var token);
+
+            var isTokenValid = _tokenService.ValidateToken(token);
+            if (!isTokenValid)
+            {
+                return null;
+            }
+
+            var user = await _accoutService.GetUserData(token);
+            
+            return user;
         }
     }
 }

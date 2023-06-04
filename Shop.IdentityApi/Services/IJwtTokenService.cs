@@ -2,6 +2,8 @@
 {
     public interface IJwtTokenService
     {
-        public string CreateToken(string email);
+        string CreateToken(string email);
+
+        bool ValidateToken(string token);
     }
 }

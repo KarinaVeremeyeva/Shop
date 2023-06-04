@@ -29,10 +29,36 @@ namespace Shop.IdentityApi.Services
                 issuer: _settings.ValidIssuer,
                 audience: _settings.ValidAudience,
                 claims: claims,
-                expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(2)),
+                expires: DateTime.UtcNow.Add(TimeSpan.FromHours(1)),
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public bool ValidateToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.SecretKey));
+            var validationParameters = new TokenValidationParameters()
+            {
+                ValidateAudience = true,
+                ValidateIssuer = true,
+                ValidIssuer = _settings.ValidIssuer,
+                ValidAudience = _settings.ValidAudience,
+                IssuerSigningKey = authSigningKey,
+                ValidateLifetime = true
+            };
+
+            try
+            {
+                tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
+
+                return validatedToken.ValidTo >= DateTime.UtcNow;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

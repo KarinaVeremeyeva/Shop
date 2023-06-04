@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Shop.BLL.Models;
 using Shop.DataAccess.Entities;
+using Shop.IdentityApi.Models;
 
 namespace Shop.BLL
 {
@@ -16,6 +17,8 @@ namespace Shop.BLL
             CreateMap<Detail, DetailModel>();
             CreateMap<ProductDetail, ProductDetailModel>();
             CreateMap<CartItem, CartItemModel>();
+
+            CreateMap<UserDataModel, UserModel>();
         }
     }
 }

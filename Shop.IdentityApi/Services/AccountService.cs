@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Shop.IdentityApi.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Shop.IdentityApi.Services
 {
@@ -27,6 +29,22 @@ namespace Shop.IdentityApi.Services
         public async Task LogoutAsync()
         {
             await _signInManager.SignOutAsync();
+        }
+
+        public async Task<UserDataModel> GetUserData(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtSecurityToken = handler.ReadJwtToken(token);
+
+            var email = jwtSecurityToken.Claims.First(c => c.Type == ClaimTypes.Email).Value;
+            
+            var user = await _userManager.FindByEmailAsync(email);
+            var roles = await _userManager.GetRolesAsync(user);
+            var role = roles.SingleOrDefault();
+
+            var userModel = new UserDataModel { Email = email, Role = role };
+
+            return userModel;
         }
     }
 }
