@@ -24,6 +24,7 @@ namespace Shop.BLL.Services
                 response.EnsureSuccessStatusCode();
 
                 var user = await response.Content.ReadFromJsonAsync<UserDataModel>();
+
                 return user;
             }
         }

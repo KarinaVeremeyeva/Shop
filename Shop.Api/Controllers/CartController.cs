@@ -27,8 +27,10 @@ namespace Shop.Api.Controllers
         [HttpPost("{productId}")]
         public async Task<IActionResult> AddToCartAsync(Guid productId)
         {
-            var email = await ParseTokenAsync();
-            var updatedCartItem = _cartItemsService.AddToCart(productId, email);
+            Request.Headers.TryGetValue(Authorization, out var token);
+            var userData = await _identityApiService.GetUserData(token);
+
+            var updatedCartItem = _cartItemsService.AddToCart(productId, userData.Email);
             var cartItemDto = _mapper.Map<CartItemDto>(updatedCartItem);
 
             return Ok(cartItemDto);
@@ -37,8 +39,10 @@ namespace Shop.Api.Controllers
         [HttpDelete("{productId}")]
         public async Task<IActionResult> RemoveFromCartAsync(Guid productId)
         {
-            var email = await ParseTokenAsync();
-            _cartItemsService.RemoveFromCard(productId, email);
+            Request.Headers.TryGetValue(Authorization, out var token);
+            var userData = await _identityApiService.GetUserData(token);
+
+            _cartItemsService.RemoveFromCard(productId, userData.Email);
 
             return Ok();
         }
@@ -46,8 +50,10 @@ namespace Shop.Api.Controllers
         [HttpPut("{productId}/reduce")]
         public async Task<IActionResult> ReduceProductCountAsync(Guid productId)
         {
-            var email = await ParseTokenAsync();
-            _cartItemsService.ReduceProductCount(productId, email);
+            Request.Headers.TryGetValue(Authorization, out var token);
+            var userData = await _identityApiService.GetUserData(token);
+
+            _cartItemsService.ReduceProductCount(productId, userData.Email);
 
             return Ok();
         }
@@ -55,8 +61,10 @@ namespace Shop.Api.Controllers
         [HttpGet]
         public async Task<IEnumerable<CartItemDto>> GetCartItemsAsync()
         {
-            var email = await ParseTokenAsync();
-            var items = _cartItemsService.GetCartItems(email);
+            Request.Headers.TryGetValue(Authorization, out var token);
+            var userData = await _identityApiService.GetUserData(token);
+
+            var items = _cartItemsService.GetCartItems(userData.Email);
 
             return _mapper.Map<List<CartItemDto>>(items);
         }
@@ -76,16 +84,6 @@ namespace Shop.Api.Controllers
             };
 
             return result;
-        }
-
-        private async Task<string> ParseTokenAsync()
-        {
-            Request.Headers.TryGetValue(Authorization, out var token);
-
-            var userData = await _identityApiService.GetUserData(token);
-            var email = userData.Email;
-            
-            return email;
         }
     }
 }
