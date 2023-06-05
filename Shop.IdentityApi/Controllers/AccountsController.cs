@@ -50,6 +50,7 @@ namespace Shop.IdentityApi.Controllers
             {
                 return null;
             }
+
             var token = authorizationHeader.Single()?.Split(" ").Last();
 
             var isTokenValid = _tokenService.ValidateToken(token);

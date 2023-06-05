@@ -30,6 +30,7 @@ namespace Shop.BLL.Services
                 {
                     return null;
                 }
+
                 var user = await response.Content.ReadFromJsonAsync<UserDataModel>();
 
                 return user;
