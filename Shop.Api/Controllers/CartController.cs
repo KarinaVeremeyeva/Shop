@@ -12,6 +12,7 @@ namespace Shop.Api.Controllers
         private ICartItemsService _cartItemsService;
         private IIdentityApiService _identityApiService;
         private IMapper _mapper;
+        private const string Authorization = "Authorization";
 
         public CartController(
             ICartItemsService cartItemsService,
@@ -60,10 +61,27 @@ namespace Shop.Api.Controllers
             return _mapper.Map<List<CartItemDto>>(items);
         }
 
+        [HttpGet("user-data")]
+        public async Task<UserDataDto> GetAllUserData()
+        {
+            Request.Headers.TryGetValue(Authorization, out var token);
+            var userData = await _identityApiService.GetUserData(token);
+
+            var result = new UserDataDto
+            {
+                Email = userData.Email,
+                Role = userData.Role,
+                TotalProductsCount = _cartItemsService.GetTotalCount(userData.Email),
+                TotalProductsPrice = _cartItemsService.GetTotalPrice(userData.Role),
+            };
+
+            return result;
+        }
+
         private async Task<string> ParseTokenAsync()
         {
-            Request.Cookies.TryGetValue("Access-Token", out var token);
-            //var email = "user1@gmail.com";
+            Request.Headers.TryGetValue(Authorization, out var token);
+
             var userData = await _identityApiService.GetUserData(token);
             var email = userData.Email;
             

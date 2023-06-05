@@ -7,6 +7,7 @@ namespace Shop.BLL.Services
     {
         private readonly HttpClient _httpClient;
         private const string UserPath = "api/Accounts";
+        private const string Authorization = "Authorization";
 
         public IdentityApiService(HttpClient httpClient)
         {
@@ -15,15 +16,16 @@ namespace Shop.BLL.Services
 
         public async Task<UserDataModel> GetUserData(string token)
         {
-            UserDataModel user = null;
-            var response = await _httpClient.GetAsync($"{UserPath}/validate");
-            
-            if (response.IsSuccessStatusCode && response.Content != null)
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"{UserPath}/validate"))
             {
-                user = await response.Content.ReadFromJsonAsync<UserDataModel>();
-            }
+                request.Headers.Add(Authorization, token);
+                
+                var response = await _httpClient.SendAsync(request);
+                response.EnsureSuccessStatusCode();
 
-            return user;
+                var user = await response.Content.ReadFromJsonAsync<UserDataModel>();
+                return user;
+            }
         }
     }
 }
