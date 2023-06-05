@@ -30,6 +30,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = tokenSettings.GetValue<string>("ValidAudience"),
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings.GetValue<string>("SecretKey"))),
             ValidateIssuerSigningKey = true,
+            ValidateLifetime = true
         };
     });
 

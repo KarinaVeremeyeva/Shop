@@ -1,9 +1,10 @@
-using Shop.DataAccess;
-using Shop.BLL.Services;
 using Microsoft.EntityFrameworkCore;
-using Shop.DataAccess.Repositories;
-using Shop.BLL;
 using Shop.Api;
+using Shop.BLL;
+using Shop.BLL.Services;
+using Shop.DataAccess;
+using Shop.DataAccess.Repositories;
+using System.Net.Http.Headers;
 
 internal class Program
 {
@@ -24,6 +25,13 @@ internal class Program
         builder.Services.AddScoped<ICategoriesService, CategoriesService>();
         builder.Services.AddScoped<IProductsService, ProductsService>();
         builder.Services.AddScoped<ICartItemsService, CartItemsService>();
+        builder.Services.AddHttpClient<IIdentityApiService, IdentityApiService>(client =>
+        {
+            client.BaseAddress = new Uri("https://localhost:7017/");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+        });
 
         builder.Services.AddAutoMapper(typeof(BusinessLogicProfile), typeof(MappingProfile));
 
