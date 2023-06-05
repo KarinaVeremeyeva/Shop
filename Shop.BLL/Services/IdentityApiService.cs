@@ -14,15 +14,22 @@ namespace Shop.BLL.Services
             _httpClient = httpClient;
         }
 
-        public async Task<UserDataModel> GetUserData(string token)
+        public async Task<UserDataModel?> GetUserData(string token)
         {
+            if (token == null)
+            {
+                return null;
+            }
+
             using (var request = new HttpRequestMessage(HttpMethod.Get, $"{UserPath}/validate"))
             {
                 request.Headers.Add(Authorization, token);
                 
                 var response = await _httpClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
-
+                if (!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
                 var user = await response.Content.ReadFromJsonAsync<UserDataModel>();
 
                 return user;

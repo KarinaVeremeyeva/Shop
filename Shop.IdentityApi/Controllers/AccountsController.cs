@@ -29,7 +29,7 @@ namespace Shop.IdentityApi.Controllers
             }
 
             var token = _tokenService.CreateToken(loginModel.Username);
-            Response.Headers.Add(Authorization, token);
+            Response.Headers.Add(Authorization, $"Bearer {token}");
 
             return Ok();
         }
@@ -43,9 +43,14 @@ namespace Shop.IdentityApi.Controllers
         }
 
         [HttpGet("validate")]
-        public async Task<UserDataModel> GetUserData()
+        public async Task<UserDataModel?> GetUserData()
         {
-            Request.Headers.TryGetValue(Authorization, out var token);
+            Request.Headers.TryGetValue(Authorization, out var authorizationHeader);
+            if (!authorizationHeader.Any())
+            {
+                return null;
+            }
+            var token = authorizationHeader.Single()?.Split(" ").Last();
 
             var isTokenValid = _tokenService.ValidateToken(token);
             if (!isTokenValid)
