@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Shop.Api;
@@ -9,7 +10,8 @@ using System.Net.Http.Headers;
 
 internal class Program
 {
-    private const string Name = "AllowAnyOrigin";
+    private const string CorsPolicyName = "AllowAnyOrigin";
+    private const string PolicyName = "UsersOnly";
 
     private static void Main(string[] args)
     {
@@ -38,7 +40,7 @@ internal class Program
 
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy(Name,
+            options.AddPolicy(CorsPolicyName,
                 builder => builder
                     .AllowAnyOrigin()
                     .AllowAnyMethod()
@@ -46,6 +48,22 @@ internal class Program
         });
 
         builder.Services.AddControllers();
+
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+            .AddScheme<TokenHandler.TokenHandlerOptions, TokenHandler>(JwtBearerDefaults.AuthenticationScheme, _=> { });
+
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy(PolicyName, policy =>
+            {
+                policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
+                policy.RequireRole("User");
+            });
+        });
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(option =>
@@ -85,8 +103,9 @@ internal class Program
 
         app.UseHttpsRedirection();
 
-        app.UseCors(Name);
+        app.UseCors(CorsPolicyName);
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();
