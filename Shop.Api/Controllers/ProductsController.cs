@@ -9,8 +9,8 @@ namespace Shop.Api.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        private IProductsService _productsService;
-        private IMapper _mapper;
+        private readonly IProductsService _productsService;
+        private readonly IMapper _mapper;
 
         public ProductsController(
             IProductsService productsService,

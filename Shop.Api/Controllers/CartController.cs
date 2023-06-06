@@ -9,9 +9,9 @@ namespace Shop.Api.Controllers
     [Route("api/[controller]")]
     public class CartController : ControllerBase
     {
-        private ICartItemsService _cartItemsService;
-        private IIdentityApiService _identityApiService;
-        private IMapper _mapper;
+        private readonly ICartItemsService _cartItemsService;
+        private readonly IIdentityApiService _identityApiService;
+        private readonly IMapper _mapper;
         private const string Authorization = "Authorization";
 
         public CartController(

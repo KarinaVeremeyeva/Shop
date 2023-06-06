@@ -7,9 +7,9 @@ namespace Shop.BLL.Services
 {
     public class CartItemsService : ICartItemsService
     {
-        private ICartItemsRepository _cartItemsRepository;
-        private IProductRepository _productRepository;
-        private IMapper _mapper;
+        private readonly ICartItemsRepository _cartItemsRepository;
+        private readonly IProductRepository _productRepository;
+        private readonly IMapper _mapper;
 
         public CartItemsService(
             ICartItemsRepository cartItemsRepository,
@@ -24,7 +24,7 @@ namespace Shop.BLL.Services
         public CartItemModel AddToCart(Guid productId, string email)
         {
             var checkProductId = _productRepository.GetById(productId)
-                ?? throw new ArgumentException($"Product {productId} doen't exist.");
+                ?? throw new ArgumentException($"Product {productId} doesn't exist.");
 
             var cartItem = _cartItemsRepository.GetAll()
                 .SingleOrDefault(c => c.UserEmail == email && c.ProductId == productId);

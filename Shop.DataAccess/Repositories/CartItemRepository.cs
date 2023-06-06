@@ -14,7 +14,7 @@ namespace Shop.DataAccess.Repositories
         {
             var cartItem = _context.ShoppingCartItems
                .Include(c => c.Product)
-               .FirstOrDefault(p => p.Id == id);
+               .SingleOrDefault(p => p.Id == id);
 
             return cartItem;
         }

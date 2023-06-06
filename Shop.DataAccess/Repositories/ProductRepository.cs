@@ -15,7 +15,7 @@ namespace Shop.DataAccess.Repositories
                 .Include(p => p.Category)
                 .Include(p => p.Details)
                 .ThenInclude(d => d.ProductDetails.Where(pd => pd.ProductId == id))
-                .FirstOrDefault(p => p.Id == id);
+                .SingleOrDefault(p => p.Id == id);
 
             return product;
         }

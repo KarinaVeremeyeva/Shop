@@ -7,8 +7,8 @@ namespace Shop.BLL.Services
 {
     public class CategoriesService : ICategoriesService
     {
-        private ICategoryRepository _categoryRepository;
-        private IMapper _mapper;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IMapper _mapper;
 
         public CategoriesService(
             ICategoryRepository categoryRepository,
