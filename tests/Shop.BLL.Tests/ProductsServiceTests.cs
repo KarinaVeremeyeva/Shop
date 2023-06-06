@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using Moq;
-using Shop.BLL;
 using Shop.BLL.Services;
 using Shop.DataAccess.Repositories;
 
-namespace Shop.Tests
+namespace Shop.BLL.Tests
 {
     [TestFixture]
     public class ProductsServiceTests

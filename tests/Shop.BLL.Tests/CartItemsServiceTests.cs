@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using Moq;
-using Shop.BLL;
 using Shop.BLL.Services;
 using Shop.DataAccess.Entities;
 using Shop.DataAccess.Repositories;
 
-namespace Shop.Tests
+namespace Shop.BLL.Tests
 {
     [TestFixture]
     public class CartItemsServiceTests
@@ -92,7 +91,7 @@ namespace Shop.Tests
             Assert.That(() => service.AddToCart(productId, email),
                 Throws.Exception
                     .TypeOf<ArgumentException>()
-                    .With.Property("Message").EqualTo($"Product {productId} doen't exist."));
+                    .With.Property("Message").EqualTo($"Product {productId} doesn't exist."));
         }
 
         [Test]

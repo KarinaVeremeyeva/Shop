@@ -1,6 +1,6 @@
 ﻿using Shop.DataAccess.Entities;
 
-namespace Shop.Tests
+namespace Shop.DataAccess.Tests
 {
     public static class TestData
     {

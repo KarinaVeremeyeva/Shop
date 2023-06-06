@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Shop.DataAccess;
 
-namespace Shop.Tests
+namespace Shop.DataAccess.Tests
 {
     public class TestShopContext : ShopContext
     {
