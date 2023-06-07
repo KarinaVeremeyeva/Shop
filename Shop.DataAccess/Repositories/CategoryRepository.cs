@@ -28,7 +28,7 @@ namespace Shop.DataAccess.Repositories
                 .Include(c => c.ChildCategories)
                 .ThenInclude(c => c.ChildCategories)
                 .ThenInclude(c => c.ChildCategories)
-                .FirstOrDefault(c => c.Id == id);
+                .SingleOrDefault(c => c.Id == id);
 
             return category;
         }

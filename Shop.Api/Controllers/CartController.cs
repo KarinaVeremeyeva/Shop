@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Api.DTOs;
 using Shop.BLL.Services;
+using System.Security.Claims;
 
 namespace Shop.Api.Controllers
 {
@@ -9,108 +12,90 @@ namespace Shop.Api.Controllers
     [Route("api/[controller]")]
     public class CartController : ControllerBase
     {
-        private ICartItemsService _cartItemsService;
-        private IIdentityApiService _identityApiService;
-        private IMapper _mapper;
-        private const string Authorization = "Authorization";
+        private readonly ICartItemsService _cartItemsService;
+        private readonly IMapper _mapper;
 
         public CartController(
             ICartItemsService cartItemsService,
-            IIdentityApiService identityApiService,
             IMapper mapper)
         {
             _cartItemsService = cartItemsService;
             _mapper = mapper;
-            _identityApiService = identityApiService;
         }
 
         [HttpPost("{productId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "UsersOnly")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CartItemDto))]
-        public async Task<IActionResult> AddToCartAsync(Guid productId)
+        public IActionResult AddToCart(Guid productId)
         {
-            Request.Headers.TryGetValue(Authorization, out var token);
-            var userData = await _identityApiService.GetUserData(token);
-            if (userData == null)
-            {
-                return Unauthorized();
-            }
+            var email = User.Claims.First(type => type.Type == ClaimTypes.Email).Value;
 
-            var updatedCartItem = _cartItemsService.AddToCart(productId, userData.Email);
+            var updatedCartItem = _cartItemsService.AddToCart(productId, email);
             var cartItemDto = _mapper.Map<CartItemDto>(updatedCartItem);
 
             return Ok(cartItemDto);
         }
 
         [HttpDelete("{productId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "UsersOnly")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> RemoveFromCartAsync(Guid productId)
+        public IActionResult RemoveFromCart(Guid productId)
         {
-            Request.Headers.TryGetValue(Authorization, out var token);
-            var userData = await _identityApiService.GetUserData(token);
-            if (userData == null)
-            {
-                return Unauthorized();
-            }
+            var email = User.Claims.First(type => type.Type == ClaimTypes.Email).Value;
 
-            _cartItemsService.RemoveFromCard(productId, userData.Email);
+            _cartItemsService.RemoveFromCard(productId, email);
 
             return Ok();
         }
 
         [HttpPut("{productId}/reduce")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "UsersOnly")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> ReduceProductCountAsync(Guid productId)
+        public IActionResult ReduceProductCount(Guid productId)
         {
-            Request.Headers.TryGetValue(Authorization, out var token);
-            var userData = await _identityApiService.GetUserData(token);
-            if (userData == null)
-            {
-                return Unauthorized();
-            }
+            var email = User.Claims.First(type => type.Type == ClaimTypes.Email).Value;
 
-            _cartItemsService.ReduceProductCount(productId, userData.Email);
+            _cartItemsService.ReduceProductCount(productId, email);
 
             return Ok();
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "UsersOnly")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CartItemDto>))]
-        public async Task<IActionResult> GetCartItemsAsync()
+        public IActionResult GetCartItems()
         {
-            Request.Headers.TryGetValue(Authorization, out var token);
-            var userData = await _identityApiService.GetUserData(token);
-            if (userData == null)
-            {
-                return Unauthorized();
-            }
+            var email = User.Claims.First(type => type.Type == ClaimTypes.Email).Value;
 
-            var items = _cartItemsService.GetCartItems(userData.Email);
+            var items = _cartItemsService.GetCartItems(email);
 
             return Ok(_mapper.Map<List<CartItemDto>>(items));
         }
 
         [HttpGet("user-data")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDataDto))]
-        public async Task<IActionResult> GetAllUserData()
+        public IActionResult GetAllUserData()
         {
-            Request.Headers.TryGetValue(Authorization, out var token);
-            var userData = await _identityApiService.GetUserData(token);
-            if (userData == null)
-            {
-                return Unauthorized();
-            }
+            var email = User.Claims.First(type => type.Type == ClaimTypes.Email).Value;
+            var role = User.Claims.First(type => type.Type == ClaimTypes.Role).Value;
 
             var result = new UserDataDto
             {
-                Email = userData.Email,
-                Role = userData.Role,
-                TotalProductsCount = _cartItemsService.GetTotalCount(userData.Email),
-                TotalProductsPrice = _cartItemsService.GetTotalPrice(userData.Role),
+                Email = email,
+                Role = role,
+                TotalProductsCount = _cartItemsService.GetTotalCount(email),
+                TotalProductsPrice = _cartItemsService.GetTotalPrice(email),
             };
 
             return Ok(result);

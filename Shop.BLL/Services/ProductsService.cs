@@ -6,9 +6,9 @@ namespace Shop.BLL.Services
 {
     public class ProductsService : IProductsService
     {
-        private ICategoriesService _categoriesService;
-        private IProductRepository _productRepository;
-        private IMapper _mapper;
+        private readonly ICategoriesService _categoriesService;
+        private readonly IProductRepository _productRepository;
+        private readonly IMapper _mapper;
 
         public ProductsService(
             ICategoriesService categoriesService,
@@ -23,7 +23,11 @@ namespace Shop.BLL.Services
         public ProductModel? GetProduct(Guid productId)
         {
             var product = _productRepository.GetById(productId);
-
+            if (product == null)
+            {
+                throw new ArgumentException($"Product {productId} was not found");
+            }
+            
             return _mapper.Map<ProductModel>(product);
         }
 
@@ -34,7 +38,15 @@ namespace Shop.BLL.Services
             var productsByCategoryIds = _productRepository.GetProductsByCategoryIds(categoryAndChildrenIds);
 
             var productModels = _mapper.Map<List<ProductModel>>(productsByCategoryIds);
-            productModels.ForEach(p => p.Details.ForEach(d => d.ProductDetails = d.ProductDetails.Where(pd => pd.ProductId == p.Id)));
+            var result = GetDetailsForEachProduct(productModels);
+            
+            return result;
+        }
+
+        private IEnumerable<ProductModel> GetDetailsForEachProduct(List<ProductModel> productModels)
+        {
+            productModels.ForEach(p => p.Details
+                .ForEach(d => d.ProductDetails = d.ProductDetails.Where(pd => pd.ProductId == p.Id)));
 
             return productModels;
         }

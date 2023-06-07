@@ -24,12 +24,6 @@ namespace Shop.DataAccess
 
         public DbSet<CartItem> ShoppingCartItems { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(
-                @"Server=(localdb)\mssqllocaldb;Database=ShopDb;Trusted_Connection=True;");
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Category>(entity => 

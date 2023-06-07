@@ -16,7 +16,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
     <ProjectReference Include="..\Shop.BLL\Shop.BLL.csproj" />
-    <ProjectReference Include="..\Shop.DataAccess\Shop.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

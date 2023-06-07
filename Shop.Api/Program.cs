@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Shop.Api;
 using Shop.BLL;
 using Shop.BLL.Services;
@@ -8,7 +10,8 @@ using System.Net.Http.Headers;
 
 internal class Program
 {
-    private const string Name = "AllowAnyOrigin";
+    private const string CorsPolicyName = "AllowAnyOrigin";
+    private const string PolicyName = "UsersOnly";
 
     private static void Main(string[] args)
     {
@@ -37,7 +40,7 @@ internal class Program
 
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy(Name,
+            options.AddPolicy(CorsPolicyName,
                 builder => builder
                     .AllowAnyOrigin()
                     .AllowAnyMethod()
@@ -46,8 +49,49 @@ internal class Program
 
         builder.Services.AddControllers();
 
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+            .AddScheme<TokenHandler.TokenHandlerOptions, TokenHandler>(JwtBearerDefaults.AuthenticationScheme, _=> { });
+
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy(PolicyName, policy =>
+            {
+                policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
+                policy.RequireRole("User");
+            });
+        });
+
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(option =>
+        {
+            option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please enter a valid token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "Bearer"
+            });
+            option.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+        });
 
         var app = builder.Build();
 
@@ -59,8 +103,9 @@ internal class Program
 
         app.UseHttpsRedirection();
 
-        app.UseCors(Name);
+        app.UseCors(CorsPolicyName);
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();

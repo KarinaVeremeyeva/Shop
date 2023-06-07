@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Shop.DataAccess;
 using Shop.DataAccess.Entities;
 using Shop.DataAccess.Repositories;
 
-namespace Shop.Tests
+namespace Shop.DataAccess.Tests
 {
     [TestFixture]
     public class ProductRepositoryTests
