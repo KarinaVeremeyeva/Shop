@@ -22,8 +22,11 @@ namespace Shop.BLL.Services
 
         public ProductModel? GetProduct(Guid productId)
         {
-            var product = _productRepository.GetById(productId)
-                ?? throw new ArgumentException($"Product {productId} was not found");
+            var product = _productRepository.GetById(productId);
+            if (product == null)
+            {
+                throw new ArgumentException($"Product {productId} was not found");
+            }
             
             return _mapper.Map<ProductModel>(product);
         }
@@ -43,8 +46,7 @@ namespace Shop.BLL.Services
         private IEnumerable<ProductModel> GetDetailsForEachProduct(List<ProductModel> productModels)
         {
             productModels.ForEach(p => p.Details
-                .ForEach(d => d.ProductDetails = d.ProductDetails
-                .Where(pd => pd.ProductId == p.Id)));
+                .ForEach(d => d.ProductDetails = d.ProductDetails.Where(pd => pd.ProductId == p.Id)));
 
             return productModels;
         }
