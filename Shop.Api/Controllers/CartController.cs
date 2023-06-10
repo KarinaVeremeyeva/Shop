@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Api.DTOs;
+using Shop.BLL.Models;
 using Shop.BLL.Services;
 using System.Security.Claims;
 
@@ -71,13 +72,17 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CartItemDto>))]
-        public IActionResult GetCartItems()
+        public IActionResult GetCartItems(int? pageNumber)
         {
             var email = User.Claims.First(type => type.Type == ClaimTypes.Email).Value;
 
             var items = _cartItemsService.GetCartItems(email);
+            var result = _mapper.Map<List<CartItemDto>>(items);
 
-            return Ok(_mapper.Map<List<CartItemDto>>(items));
+            var pageSize = 2;
+            var paginatedList = PaginatedList<CartItemDto>.Create(result, pageNumber ?? 1, pageSize);
+            
+            return Ok(paginatedList);
         }
 
         [HttpGet("user-data")]

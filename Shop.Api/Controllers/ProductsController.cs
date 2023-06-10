@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Api.DTOs;
+using Shop.BLL.Models;
 using Shop.BLL.Services;
 
 namespace Shop.Api.Controllers
@@ -21,11 +22,15 @@ namespace Shop.Api.Controllers
         }
 
         [HttpGet("category/{categoryId}")]
-        public IEnumerable<ProductDto> GetProductsByCategoryId([FromRoute] Guid categoryId)
+        public IEnumerable<ProductDto> GetProductsByCategoryId([FromRoute] Guid categoryId, int? pageNumber)
         {
             var products = _productsService.GetProductByCategoryId(categoryId);
+            var result = _mapper.Map<List<ProductDto>>(products);
 
-            return _mapper.Map<List<ProductDto>>(products);
+            var pageSize = 2;
+            var paginatedList = PaginatedList<ProductDto>.Create(result, pageNumber ?? 1, pageSize);
+
+            return paginatedList;
         }
 
         [HttpGet("{productId}")]
