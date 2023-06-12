@@ -18,6 +18,13 @@ namespace Shop.Api
                     dest => dest.Value,
                     opt => opt.MapFrom(src => src.ProductDetails.Single().Value));
             CreateMap<CartItemModel, CartItemDto>();
+            CreateMap<PaginatedListModel<ProductModel>, ProductResultDto>()
+                .ForMember(
+                    dest => dest.CurrentPage,
+                    opt => opt.MapFrom(src => src.PageIndex))
+                .ForMember(
+                    dest => dest.Products,
+                    opt => opt.MapFrom(src => src.Items));
         }
     }
 }

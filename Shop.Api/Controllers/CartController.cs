@@ -76,8 +76,9 @@ namespace Shop.Api.Controllers
             var email = User.Claims.First(type => type.Type == ClaimTypes.Email).Value;
 
             var items = _cartItemsService.GetCartItems(email);
-
-            return Ok(_mapper.Map<List<CartItemDto>>(items));
+            var result = _mapper.Map<List<CartItemDto>>(items);
+            
+            return Ok(result);
         }
 
         [HttpGet("user-data")]

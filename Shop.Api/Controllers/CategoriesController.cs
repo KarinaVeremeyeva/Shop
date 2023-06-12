@@ -21,11 +21,13 @@ namespace Shop.Api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<CategoryDto> GetCategories()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CategoryDto>))]
+        public IActionResult GetCategories()
         {
             var categories = _categoriesService.GetCategories();
-
-            return _mapper.Map<List<CategoryDto>>(categories);
+            var categoriesDto = _mapper.Map<List<CategoryDto>>(categories);
+            
+            return Ok(categoriesDto);
         }
     }
 }
