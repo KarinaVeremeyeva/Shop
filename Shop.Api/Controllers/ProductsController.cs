@@ -22,23 +22,23 @@ namespace Shop.Api.Controllers
         }
 
         [HttpGet("category/{categoryId}")]
-        public IEnumerable<ProductDto> GetProductsByCategoryId([FromRoute] Guid categoryId, int? pageNumber)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductResultDto))]
+        public IActionResult GetProductsByCategoryId([FromRoute] Guid categoryId, int? pageNumber)
         {
-            var products = _productsService.GetProductByCategoryId(categoryId);
-            var result = _mapper.Map<List<ProductDto>>(products);
+            var productsPaginatedModels = _productsService.GetProductByCategoryId(categoryId, pageNumber ?? 1);
+            var productResultDto = _mapper.Map<ProductResultDto>(productsPaginatedModels);
 
-            var pageSize = 2;
-            var paginatedList = PaginatedList<ProductDto>.Create(result, pageNumber ?? 1, pageSize);
-
-            return paginatedList;
+            return Ok(productResultDto);
         }
 
         [HttpGet("{productId}")]
-        public ProductDto GetProductsById([FromRoute] Guid productId)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductDto))]
+        public IActionResult GetProductsById([FromRoute] Guid productId)
         {
             var product = _productsService.GetProduct(productId);
+            var productDto = _mapper.Map<ProductDto>(product);
 
-            return _mapper.Map<ProductDto>(product);
+            return Ok(productDto);
         }
     }
 }

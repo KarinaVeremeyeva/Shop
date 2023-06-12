@@ -31,7 +31,7 @@ namespace Shop.BLL.Services
             return _mapper.Map<ProductModel>(product);
         }
 
-        public IEnumerable<ProductModel> GetProductByCategoryId(Guid categoryId)
+        public PaginatedListModel<ProductModel> GetProductByCategoryId(Guid categoryId, int pageNumber)
         {
             var categoryAndChildrenIds = _categoriesService.GetCategoryAndChildrenIds(categoryId);
 
@@ -39,8 +39,11 @@ namespace Shop.BLL.Services
 
             var productModels = _mapper.Map<List<ProductModel>>(productsByCategoryIds);
             var result = GetDetailsForEachProduct(productModels);
-            
-            return result;
+
+            var pageSize = 2;
+            var paginatedList = PaginatedListModel<ProductModel>.Create(result, pageNumber, pageSize);
+
+            return paginatedList;
         }
 
         private IEnumerable<ProductModel> GetDetailsForEachProduct(List<ProductModel> productModels)
