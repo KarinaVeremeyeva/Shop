@@ -40,7 +40,7 @@ namespace Shop.BLL.Services
             var productModels = _mapper.Map<List<ProductModel>>(productsByCategoryIds);
             var result = GetDetailsForEachProduct(productModels);
 
-            var pageSize = 2;
+            const int pageSize = 2;
             var paginatedList = PaginatedListModel<ProductModel>.Create(result, pageNumber, pageSize);
 
             return paginatedList;

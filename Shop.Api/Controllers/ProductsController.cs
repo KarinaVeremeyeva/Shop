@@ -23,9 +23,9 @@ namespace Shop.Api.Controllers
 
         [HttpGet("category/{categoryId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductResultDto))]
-        public IActionResult GetProductsByCategoryId([FromRoute] Guid categoryId, int? pageNumber)
+        public IActionResult GetProductsByCategoryId([FromRoute] Guid categoryId, int pageNumber = 1)
         {
-            var productsPaginatedModels = _productsService.GetProductByCategoryId(categoryId, pageNumber ?? 1);
+            var productsPaginatedModels = _productsService.GetProductByCategoryId(categoryId, pageNumber);
             var productResultDto = _mapper.Map<ProductResultDto>(productsPaginatedModels);
 
             return Ok(productResultDto);
