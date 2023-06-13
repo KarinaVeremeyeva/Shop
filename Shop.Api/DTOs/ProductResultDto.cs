@@ -1,4 +1,6 @@
-﻿namespace Shop.Api.DTOs
+﻿using Shop.BLL.Models;
+
+namespace Shop.Api.DTOs
 {
     public class ProductResultDto
     {
@@ -9,5 +11,7 @@
         public int TotalPages { get; set; }
 
         public int CurrentPage { get; set; }
+
+        public List<FilterDto> Filters { get; set; }
     }
 }

@@ -11,13 +11,16 @@ namespace Shop.Api.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductsService _productsService;
+        private readonly IDetailsService _detailsService;
         private readonly IMapper _mapper;
 
         public ProductsController(
             IProductsService productsService,
+            IDetailsService detailsService,
             IMapper mapper)
         {
             _productsService = productsService;
+            _detailsService = detailsService;
             _mapper = mapper;
         }
 
@@ -25,8 +28,12 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductResultDto))]
         public IActionResult GetProductsByCategoryId([FromRoute] Guid categoryId, int pageNumber = 1)
         {
+            var filters = _detailsService.GetFiltersByCategoryId(categoryId);
+            var filtersDto = _mapper.Map<List<FilterDto>>(filters);
+
             var productsPaginatedModels = _productsService.GetProductByCategoryId(categoryId, pageNumber);
             var productResultDto = _mapper.Map<ProductResultDto>(productsPaginatedModels);
+            productResultDto.Filters = filtersDto;
 
             return Ok(productResultDto);
         }

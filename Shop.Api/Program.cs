@@ -35,6 +35,7 @@ internal class Program
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
         });
+        builder.Services.AddScoped<IDetailsService, DetailsService>();
 
         builder.Services.AddAutoMapper(typeof(BusinessLogicProfile), typeof(MappingProfile));
 
