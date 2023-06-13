@@ -23,13 +23,13 @@ namespace Shop.BLL.Services
                 .Where(detail => products.All(p => p.Details.Any(d => d.Id == detail.Id)))
                 .Select(d => d.Id)
                 .Distinct()
-                .ToList();
+                .ToHashSet();
 
             var commonFilters = details.Where(d => commonDetailIds.Contains(d.Id));
 
             var priceFilter = new FilterModel
             {
-                DetailId = Guid.NewGuid(),
+                DetailId = Guid.Parse("00000000-0000-0000-0000-000000000000"),
                 Name = PriceFilter,
                 Type = DetailType.Number,
                 Values = products.Select(p => p.Price.ToString("F", CultureInfo.InvariantCulture)).Distinct().ToList()
