@@ -28,6 +28,7 @@ internal class Program
         builder.Services.AddScoped<ICategoriesService, CategoriesService>();
         builder.Services.AddScoped<IProductsService, ProductsService>();
         builder.Services.AddScoped<ICartItemsService, CartItemsService>();
+        builder.Services.AddScoped<IDetailsService, DetailsService>();
         builder.Services.AddHttpClient<IIdentityApiService, IdentityApiService>(client =>
         {
             client.BaseAddress = new Uri("https://localhost:7017/");

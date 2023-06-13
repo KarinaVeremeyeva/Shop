@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Api.DTOs;
-using Shop.BLL.Models;
 using Shop.BLL.Services;
 
 namespace Shop.Api.Controllers
@@ -11,13 +10,16 @@ namespace Shop.Api.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductsService _productsService;
+        private readonly IDetailsService _detailsService;
         private readonly IMapper _mapper;
 
         public ProductsController(
             IProductsService productsService,
+            IDetailsService detailsService,
             IMapper mapper)
         {
             _productsService = productsService;
+            _detailsService = detailsService;
             _mapper = mapper;
         }
 
@@ -27,6 +29,10 @@ namespace Shop.Api.Controllers
         {
             var productsPaginatedModels = _productsService.GetProductByCategoryId(categoryId, pageNumber);
             var productResultDto = _mapper.Map<ProductResultDto>(productsPaginatedModels);
+
+            var filters = _detailsService.GetFiltersByCategoryId(categoryId);
+            var filtersDto = _mapper.Map<List<FilterDto>>(filters);
+            productResultDto.Filters = filtersDto;
 
             return Ok(productResultDto);
         }
