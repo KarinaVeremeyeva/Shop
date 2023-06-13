@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Api.DTOs;
+using Shop.BLL.Models;
 using Shop.BLL.Services;
 
 namespace Shop.Api.Controllers
@@ -23,11 +24,14 @@ namespace Shop.Api.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("category/{categoryId}")]
+        [HttpPost("category/{categoryId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductResultDto))]
-        public IActionResult GetProductsByCategoryId([FromRoute] Guid categoryId, int pageNumber = 1)
+        public IActionResult GetProductsByCategoryId([FromRoute] Guid categoryId,
+            int pageNumber = 1,
+            [FromBody] List<SelectedFilterDto>? selectedFilters = null)
         {
-            var productsPaginatedModels = _productsService.GetProductByCategoryId(categoryId, pageNumber);
+            var selectedFiltersModels = _mapper.Map<List<SelectedFilterModel>>(selectedFilters);
+            var productsPaginatedModels = _productsService.GetProductByCategoryId(categoryId, pageNumber, selectedFiltersModels);
             var productResultDto = _mapper.Map<ProductResultDto>(productsPaginatedModels);
 
             var filters = _detailsService.GetFiltersByCategoryId(categoryId);

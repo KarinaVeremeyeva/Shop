@@ -26,6 +26,7 @@ namespace Shop.Api
                     dest => dest.Products,
                     opt => opt.MapFrom(src => src.Items));
             CreateMap<FilterModel, FilterDto>();
+            CreateMap<SelectedFilterDto, SelectedFilterModel>();
         }
     }
 }
