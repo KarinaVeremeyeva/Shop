@@ -1,5 +1,6 @@
 ﻿using Shop.BLL.Models;
 using Shop.DataAccess.Entities;
+using System.Globalization;
 
 namespace Shop.BLL.Services
 {
@@ -31,7 +32,7 @@ namespace Shop.BLL.Services
                 DetailId = Guid.NewGuid(),
                 Name = PriceFilter,
                 Type = DetailType.Number,
-                Values = products.Select(p => p.Price.ToString()).ToList()
+                Values = products.Select(p => p.Price.ToString("F", CultureInfo.InvariantCulture)).Distinct().ToList()
             };
 
             var selectedFilters = commonFilters
@@ -41,7 +42,7 @@ namespace Shop.BLL.Services
                     DetailId = d.Key,
                     Name = d.First().Name,
                     Type = d.First().Type,
-                    Values = d.Select(x => x.ProductDetails.Single().Value).ToList()
+                    Values = d.Select(x => x.ProductDetails.Single().Value).Distinct().ToList()
                 })
                 .Where(f => f.Values.Count > 1);
 

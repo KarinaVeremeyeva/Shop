@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Api.DTOs;
-using Shop.BLL.Models;
 using Shop.BLL.Services;
 
 namespace Shop.Api.Controllers
