@@ -16,7 +16,7 @@ namespace Shop.BLL.Services
 
         public IEnumerable<FilterModel> GetFiltersByCategoryId(Guid categoryId)
         {
-            var products = _productsService.GetProductByCategoryId(categoryId);
+            var products = _productsService.GetProductByCategoryId(categoryId, new List<SelectedFilterModel>());
             var details = products.SelectMany(p => p.Details);
 
             var commonDetailIds = details
@@ -43,12 +43,11 @@ namespace Shop.BLL.Services
                     Name = d.First().Name,
                     Type = d.First().Type,
                     Values = d.Select(x => x.ProductDetails.Single().Value).Distinct().ToList()
-                })
-                .Where(f => f.Values.Count > 1);
+                });
 
-            var result = new List<FilterModel> { priceFilter }.Concat(selectedFilters);
+            var filters = new List<FilterModel> { priceFilter }.Concat(selectedFilters).Where(f => f.Values.Count > 1);
 
-            return result;
+            return filters;
         }
     }
 }

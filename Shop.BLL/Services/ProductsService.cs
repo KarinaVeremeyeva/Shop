@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Shop.BLL.Models;
+using Shop.DataAccess.Entities;
 using Shop.DataAccess.Repositories;
 
 namespace Shop.BLL.Services
@@ -9,6 +10,7 @@ namespace Shop.BLL.Services
         private readonly ICategoriesService _categoriesService;
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
+        private const string PriceId = "00000000-0000-0000-0000-000000000000";
 
         public ProductsService(
             ICategoriesService categoriesService,
@@ -31,21 +33,32 @@ namespace Shop.BLL.Services
             return _mapper.Map<ProductModel>(product);
         }
 
-        public IEnumerable<ProductModel> GetProductByCategoryId(Guid categoryId)
+        public IEnumerable<ProductModel> GetProductByCategoryId(Guid categoryId, List<SelectedFilterModel>? selectedFilters = null)
         {
             var categoryAndChildrenIds = _categoriesService.GetCategoryAndChildrenIds(categoryId);
 
             var productsByCategoryIds = _productRepository.GetProductsByCategoryIds(categoryAndChildrenIds);
-
             var productModels = _mapper.Map<List<ProductModel>>(productsByCategoryIds);
-            var result = GetDetailsForEachProduct(productModels);
+            var productsWithDetails = GetDetailsForEachProduct(productModels).ToList();
 
-            return result;
+            if (selectedFilters == null)
+            {
+                return productsWithDetails;
+            }
+
+            var filteredProducts = productsWithDetails.Where(product =>
+            {
+                return selectedFilters
+                    .Where(filter => filter.Values.Any())
+                    .All(filter => CheckDetailValueType(filter, product));
+            });
+            
+            return filteredProducts;
         }
 
-        public PaginatedListModel<ProductModel> GetProductByCategoryId(Guid categoryId, int pageNumber)
+        public PaginatedListModel<ProductModel> GetProductByCategoryId(Guid categoryId, int pageNumber, List<SelectedFilterModel>? selectedFilters = null)
         {
-            var products = GetProductByCategoryId(categoryId);
+            var products = GetProductByCategoryId(categoryId, selectedFilters);
 
             const int pageSize = 2;
             var paginatedList = PaginatedListModel<ProductModel>.Create(products, pageNumber, pageSize);
@@ -59,6 +72,43 @@ namespace Shop.BLL.Services
                 .ForEach(d => d.ProductDetails = d.ProductDetails.Where(pd => pd.ProductId == p.Id)));
 
             return productModels;
+        }
+
+        private static bool CheckDetailValueType(SelectedFilterModel filter, ProductModel product)
+        {
+            if (filter.DetailId == Guid.Parse(PriceId))
+            {
+                return CheckDetailValueType(DetailType.Number, product.Price.ToString(), filter.Values);
+            }
+
+            var detail = product.Details.FirstOrDefault(d => d.Id == filter.DetailId);
+            if (detail == null)
+            {
+                return false;
+            }
+
+            var detailType = detail.Type;
+            var detailValue = detail.ProductDetails.Single().Value;
+
+            return CheckDetailValueType(detailType, detailValue, filter.Values);
+        }
+
+        private static bool CheckDetailValueType(DetailType detailType, string detailValue, List<string> filterValues)
+        {
+            switch (detailType)
+            {
+                case DetailType.String:
+                    return filterValues.Contains(detailValue);
+                case DetailType.Number:
+                    var minValue = double.Parse(filterValues.First().Replace(".", ","));
+                    var maxValue = double.Parse(filterValues.Last().Replace(".", ","));
+                    var numericDetailValue = double.Parse(detailValue.Replace(".", ","));
+                    return numericDetailValue >= minValue && numericDetailValue <= maxValue;
+                case DetailType.Boolean:
+                    return filterValues.Contains(detailValue);
+            }
+
+            return false;
         }
     }
 }
