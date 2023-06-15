@@ -49,24 +49,7 @@ namespace Shop.BLL.Services
             {
                 return selectedFilters
                     .Where(filter => filter.Values.Any())
-                    .All(filter =>
-                    {
-                        if (filter.DetailId == Guid.Parse("00000000-0000-0000-0000-000000000000"))
-                        {
-                            return CheckDetailValueType(DetailType.Number, product.Price.ToString(), filter.Values);
-                        }
-
-                        var detail = product.Details.FirstOrDefault(d => d.Id == filter.DetailId);
-                        if (detail == null)
-                        {
-                            return false;
-                        }
-
-                        var detailType = detail.Type;
-                        var detailValue = detail.ProductDetails.Single().Value;
-
-                        return CheckDetailValueType(detailType, detailValue, filter.Values);
-                    });
+                    .All(filter => CheckDetailValueType(filter, product));
             });
             
             return filteredProducts;
@@ -88,6 +71,25 @@ namespace Shop.BLL.Services
                 .ForEach(d => d.ProductDetails = d.ProductDetails.Where(pd => pd.ProductId == p.Id)));
 
             return productModels;
+        }
+
+        private static bool CheckDetailValueType(SelectedFilterModel filter, ProductModel product)
+        {
+            if (filter.DetailId == Guid.Parse("00000000-0000-0000-0000-000000000000"))
+            {
+                return CheckDetailValueType(DetailType.Number, product.Price.ToString(), filter.Values);
+            }
+
+            var detail = product.Details.FirstOrDefault(d => d.Id == filter.DetailId);
+            if (detail == null)
+            {
+                return false;
+            }
+
+            var detailType = detail.Type;
+            var detailValue = detail.ProductDetails.Single().Value;
+
+            return CheckDetailValueType(detailType, detailValue, filter.Values);
         }
 
         private static bool CheckDetailValueType(DetailType detailType, string detailValue, List<string> filterValues)
