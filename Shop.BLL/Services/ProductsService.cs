@@ -38,64 +38,36 @@ namespace Shop.BLL.Services
 
             var productsByCategoryIds = _productRepository.GetProductsByCategoryIds(categoryAndChildrenIds);
             var productModels = _mapper.Map<List<ProductModel>>(productsByCategoryIds);
-            var result = GetDetailsForEachProduct(productModels).ToList();
+            var productsWithDetails = GetDetailsForEachProduct(productModels).ToList();
 
-            var filteredProducts = new List<ProductModel>();
-            foreach (var product in result)
+            if (selectedFilters == null)
             {
-                var shouldBeAdded = true;
-                foreach (var filter in selectedFilters)
-                {
-                    if (!filter.Values.Any())
-                    {
-                        continue;
-                    }
-
-                    if (filter.DetailId == Guid.Parse("00000000-0000-0000-0000-000000000000"))
-                    {
-                        var minValue = decimal.Parse(filter.Values.First().Replace(".", ","));
-                        var maxValue = decimal.Parse(filter.Values.Last().Replace(".", ","));
-                        shouldBeAdded = product.Price >= minValue && product.Price <= maxValue;
-                        continue;
-                    }
-
-                    var detail = product.Details.FirstOrDefault(d => d.Id == filter.DetailId);
-                    if (detail == null)
-                    {
-                        shouldBeAdded = false;
-                        break;
-                    }
-
-                    var detailType = detail.Type;
-                    var detailValue = detail.ProductDetails.Single().Value;
-                    switch (detailType)
-                    {
-                        case DetailType.String:
-                            shouldBeAdded = filter.Values.Contains(detailValue);
-                            break;
-                        case DetailType.Number:
-                            var minValue = double.Parse(filter.Values.First().Replace(".", ","));
-                            var maxValue = double.Parse(filter.Values.Last().Replace(".", ","));
-                            var numeralDetailValue = double.Parse(detailValue.Replace(".", ","));
-                            shouldBeAdded = numeralDetailValue >= minValue && numeralDetailValue <= maxValue;
-                            break;
-                        case DetailType.Boolean:
-                            shouldBeAdded = filter.Values.Contains(detailValue);
-                            break;
-                    }
-
-                    if (!shouldBeAdded)
-                    {
-                        break;
-                    }
-                }
-
-                if (shouldBeAdded)
-                {
-                    filteredProducts.Add(product);
-                }
-
+                return productsWithDetails;
             }
+
+            var filteredProducts = productsWithDetails.Where(product =>
+            {
+                return selectedFilters
+                    .Where(filter => filter.Values.Any())
+                    .All(filter =>
+                    {
+                        if (filter.DetailId == Guid.Parse("00000000-0000-0000-0000-000000000000"))
+                        {
+                            return CheckDetailValueType(DetailType.Number, product.Price.ToString(), filter.Values);
+                        }
+
+                        var detail = product.Details.FirstOrDefault(d => d.Id == filter.DetailId);
+                        if (detail == null)
+                        {
+                            return false;
+                        }
+
+                        var detailType = detail.Type;
+                        var detailValue = detail.ProductDetails.Single().Value;
+
+                        return CheckDetailValueType(detailType, detailValue, filter.Values);
+                    });
+            });
             
             return filteredProducts;
         }
@@ -116,6 +88,24 @@ namespace Shop.BLL.Services
                 .ForEach(d => d.ProductDetails = d.ProductDetails.Where(pd => pd.ProductId == p.Id)));
 
             return productModels;
+        }
+
+        private static bool CheckDetailValueType(DetailType detailType, string detailValue, List<string> filterValues)
+        {
+            switch (detailType)
+            {
+                case DetailType.String:
+                    return filterValues.Contains(detailValue);
+                case DetailType.Number:
+                    var minValue = double.Parse(filterValues.First().Replace(".", ","));
+                    var maxValue = double.Parse(filterValues.Last().Replace(".", ","));
+                    var numericDetailValue = double.Parse(detailValue.Replace(".", ","));
+                    return numericDetailValue >= minValue && numericDetailValue <= maxValue;
+                case DetailType.Boolean:
+                    return filterValues.Contains(detailValue);
+            }
+
+            return false;
         }
     }
 }
