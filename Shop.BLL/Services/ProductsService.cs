@@ -10,6 +10,7 @@ namespace Shop.BLL.Services
         private readonly ICategoriesService _categoriesService;
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
+        private const string PriceId = "00000000-0000-0000-0000-000000000000";
 
         public ProductsService(
             ICategoriesService categoriesService,
@@ -75,7 +76,7 @@ namespace Shop.BLL.Services
 
         private static bool CheckDetailValueType(SelectedFilterModel filter, ProductModel product)
         {
-            if (filter.DetailId == Guid.Parse("00000000-0000-0000-0000-000000000000"))
+            if (filter.DetailId == Guid.Parse(PriceId))
             {
                 return CheckDetailValueType(DetailType.Number, product.Price.ToString(), filter.Values);
             }
