@@ -25,6 +25,7 @@ internal class Program
         builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
         builder.Services.AddScoped<IProductRepository, ProductRepository>();
         builder.Services.AddScoped<ICartItemsRepository, CartItemRepository>();
+        builder.Services.AddScoped<IDetailRepository, DetailRepository>();
         builder.Services.AddScoped<ICategoriesService, CategoriesService>();
         builder.Services.AddScoped<IProductsService, ProductsService>();
         builder.Services.AddScoped<ICartItemsService, CartItemsService>();

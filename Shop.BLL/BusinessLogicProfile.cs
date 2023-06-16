@@ -13,7 +13,7 @@ namespace Shop.BLL
                 .ForMember(
                     dest => dest.Details,
                     opt => opt.MapFrom(src => src.Details));
-            CreateMap<Detail, DetailModel>();
+            CreateMap<Detail, DetailModel>().ReverseMap();
             CreateMap<ProductDetail, ProductDetailModel>();
             CreateMap<CartItem, CartItemModel>();
         }
