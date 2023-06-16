@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Api.DTOs;
 using Shop.BLL.Models;
@@ -6,6 +8,7 @@ using Shop.BLL.Services;
 
 namespace Shop.Api.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminsOnly")]
     [ApiController]
     [Route("api/[controller]")]
     public class DetailsController : ControllerBase
@@ -20,6 +23,9 @@ namespace Shop.Api.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<DetailInfoDto>))]
         public IActionResult GetDetails()
         {
             var details = _detailService.GetDetails();
@@ -29,6 +35,9 @@ namespace Shop.Api.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DetailInfoDto))]
         public IActionResult AddDetail(DetailInfoDto detailDto)
         {
             var detailModel = _mapper.Map<DetailModel>(detailDto);
@@ -39,6 +48,9 @@ namespace Shop.Api.Controllers
         }
 
         [HttpDelete("{detailId}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult RemoveDetail(Guid detailId)
         {
             _detailService.RemoveDetail(detailId);
@@ -47,6 +59,9 @@ namespace Shop.Api.Controllers
         }
 
         [HttpPut]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DetailInfoDto))]
         public IActionResult UpdateDetail(DetailInfoDto detailDto)
         {
             var detailModel = _mapper.Map<DetailModel>(detailDto);
