@@ -11,6 +11,7 @@ namespace Shop.BLL.Services
         private readonly IProductsService _productsService;
         private readonly IDetailRepository _detailRepository;
         private readonly IMapper _mapper;
+
         private const string PriceFilter = "Price";
         private const string PriceId = "00000000-0000-0000-0000-000000000000";
 

@@ -12,18 +12,14 @@ namespace Shop.DataAccess.Repositories
 
         public override IEnumerable<Detail> GetAll()
         {
-            var details = _context.Details
-                .Include(d => d.ProductDetails)
-                .ToList();
+            var details = _context.Details.ToList();
 
             return details;
         }
 
         public override Detail GetById(Guid id)
         {
-            var detail = _context.Details
-                .Include(d => d.ProductDetails)
-                .SingleOrDefault(d => d.Id == id);
+            var detail = _context.Details.SingleOrDefault(d => d.Id == id);
 
             return detail;
         }
