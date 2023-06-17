@@ -11,7 +11,8 @@ using System.Net.Http.Headers;
 internal class Program
 {
     private const string CorsPolicyName = "AllowAnyOrigin";
-    private const string PolicyName = "UsersOnly";
+    private const string UsersPolicyName = "UsersOnly";
+    private const string AdminsPolicyName = "AdminsOnly";
 
     private static void Main(string[] args)
     {
@@ -25,6 +26,7 @@ internal class Program
         builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
         builder.Services.AddScoped<IProductRepository, ProductRepository>();
         builder.Services.AddScoped<ICartItemsRepository, CartItemRepository>();
+        builder.Services.AddScoped<IDetailRepository, DetailRepository>();
         builder.Services.AddScoped<ICategoriesService, CategoriesService>();
         builder.Services.AddScoped<IProductsService, ProductsService>();
         builder.Services.AddScoped<ICartItemsService, CartItemsService>();
@@ -59,10 +61,15 @@ internal class Program
 
         builder.Services.AddAuthorization(options =>
         {
-            options.AddPolicy(PolicyName, policy =>
+            options.AddPolicy(UsersPolicyName, policy =>
             {
                 policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
                 policy.RequireRole("User");
+            });
+            options.AddPolicy(AdminsPolicyName, policy =>
+            {
+                policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
+                policy.RequireRole("Admin");
             });
         });
 
