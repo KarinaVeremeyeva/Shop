@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Api.DTOs;
+using Shop.BLL.Models;
 using Shop.BLL.Services;
 
 namespace Shop.Api.Controllers
@@ -28,6 +31,46 @@ namespace Shop.Api.Controllers
             var categoriesDto = _mapper.Map<List<CategoryDto>>(categories);
             
             return Ok(categoriesDto);
+        }
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminsOnly")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryDto))]
+        public IActionResult AddCategory(CategoryDto categoryDto)
+        {
+            var categoryModel = _mapper.Map<CategoryModel>(categoryDto);
+            var addedCategory = _categoriesService.AddCategory(categoryModel);
+            var result = _mapper.Map<CategoryDto>(addedCategory);
+
+            return Ok(result);
+        }
+
+        [HttpDelete("{categoryId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminsOnly")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult RemoveCategory(Guid categoryId)
+        {
+            _categoriesService.RemoveCategory(categoryId);
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminsOnly")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryDto))]
+        public IActionResult UpdateCategory(CategoryDto categoryDto)
+        {
+            var categoryModel = _mapper.Map<CategoryModel>(categoryDto);
+            var updatedCategory = _categoriesService.UpdateCategory(categoryModel);
+            var result = _mapper.Map<CategoryDto>(updatedCategory);
+            
+            return Ok(result);
         }
     }
 }
