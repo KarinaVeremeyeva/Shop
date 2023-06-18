@@ -8,7 +8,7 @@ namespace Shop.BLL
     {
         public BusinessLogicProfile()
         {
-            CreateMap<Category, CategoryModel>();
+            CreateMap<Category, CategoryModel>().ReverseMap();
             CreateMap<Product, ProductModel>()
                 .ForMember(
                     dest => dest.Details,

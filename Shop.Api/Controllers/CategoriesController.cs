@@ -37,12 +37,12 @@ namespace Shop.Api.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminsOnly")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryDto))]
-        public IActionResult AddCategory(CategoryDto categoryDto)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryInfoDto))]
+        public IActionResult AddCategory(CategoryInfoDto categoryDto)
         {
             var categoryModel = _mapper.Map<CategoryModel>(categoryDto);
             var addedCategory = _categoriesService.AddCategory(categoryModel);
-            var result = _mapper.Map<CategoryDto>(addedCategory);
+            var result = _mapper.Map<CategoryInfoDto>(addedCategory);
 
             return Ok(result);
         }
@@ -63,12 +63,12 @@ namespace Shop.Api.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminsOnly")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryDto))]
-        public IActionResult UpdateCategory(CategoryDto categoryDto)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryInfoDto))]
+        public IActionResult UpdateCategory(CategoryInfoDto categoryDto)
         {
             var categoryModel = _mapper.Map<CategoryModel>(categoryDto);
             var updatedCategory = _categoriesService.UpdateCategory(categoryModel);
-            var result = _mapper.Map<CategoryDto>(updatedCategory);
+            var result = _mapper.Map<CategoryInfoDto>(updatedCategory);
             
             return Ok(result);
         }
