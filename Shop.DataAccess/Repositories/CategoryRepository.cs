@@ -16,7 +16,6 @@ namespace Shop.DataAccess.Repositories
                 .Include(c => c.ChildCategories)
                 .ThenInclude(c => c.ChildCategories)
                 .ThenInclude(c => c.ChildCategories)
-                .Where(c => c.ParentCategoryId == null)
                 .ToList();
 
             return categories;

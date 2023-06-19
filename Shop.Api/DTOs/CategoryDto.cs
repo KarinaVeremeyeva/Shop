@@ -8,8 +8,6 @@
 
         public string? Description { get; set; }
 
-        public Guid? ParentCategoryId { get; set; }
-
         public ICollection<CategoryDto> ChildCategories { get; set; }
     }
 }

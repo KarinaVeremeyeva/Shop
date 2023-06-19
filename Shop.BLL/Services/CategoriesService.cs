@@ -18,10 +18,17 @@ namespace Shop.BLL.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<CategoryModel> GetCategories()
+        public IEnumerable<CategoryModel> GetCategoriesList()
         {
             var categories = _categoryRepository.GetAll();
             
+            return _mapper.Map<List<CategoryModel>>(categories);
+        }
+
+        public IEnumerable<CategoryModel> GetCategoriesTree()
+        {
+            var categories = _categoryRepository.GetAll().Where(c => c.ParentCategoryId == null);
+
             return _mapper.Map<List<CategoryModel>>(categories);
         }
 

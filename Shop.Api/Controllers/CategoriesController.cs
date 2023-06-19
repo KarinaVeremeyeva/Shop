@@ -25,15 +25,28 @@ namespace Shop.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CategoryDto>))]
-        public IActionResult GetCategories()
+        public IActionResult GetCategoriesTree()
         {
-            var categories = _categoriesService.GetCategories();
+            var categories = _categoriesService.GetCategoriesTree();
             var categoriesDto = _mapper.Map<List<CategoryDto>>(categories);
             
             return Ok(categoriesDto);
         }
 
-        [HttpPost]
+        [HttpGet("admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminsOnly")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CategoryInfoDto>))]
+        public IActionResult GetCategoriesList()
+        {
+            var categories = _categoriesService.GetCategoriesList();
+            var categoriesDto = _mapper.Map<List<CategoryInfoDto>>(categories);
+
+            return Ok(categoriesDto);
+        }
+
+        [HttpPost("admin")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminsOnly")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -47,7 +60,7 @@ namespace Shop.Api.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("{categoryId}")]
+        [HttpDelete("{categoryId}/admin")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminsOnly")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -59,7 +72,7 @@ namespace Shop.Api.Controllers
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPut("admin")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminsOnly")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]

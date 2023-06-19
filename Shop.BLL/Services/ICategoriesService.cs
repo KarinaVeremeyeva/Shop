@@ -6,7 +6,9 @@ namespace Shop.BLL.Services
     {
         IEnumerable<Guid> GetCategoryAndChildrenIds(Guid categoryId);
 
-        IEnumerable<CategoryModel> GetCategories();
+        IEnumerable<CategoryModel> GetCategoriesList();
+
+        IEnumerable<CategoryModel> GetCategoriesTree();
 
         CategoryModel AddCategory(CategoryModel category);
 
