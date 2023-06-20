@@ -22,7 +22,7 @@ namespace Shop.Api.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet("admin")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<DetailInfoDto>))]
@@ -34,7 +34,7 @@ namespace Shop.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
+        [HttpPost("admin")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DetailInfoDto))]
@@ -47,7 +47,7 @@ namespace Shop.Api.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("{detailId}")]
+        [HttpDelete("{detailId}/admin")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -58,7 +58,7 @@ namespace Shop.Api.Controllers
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPut("admin")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DetailInfoDto))]

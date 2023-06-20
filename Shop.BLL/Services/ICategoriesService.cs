@@ -6,6 +6,14 @@ namespace Shop.BLL.Services
     {
         IEnumerable<Guid> GetCategoryAndChildrenIds(Guid categoryId);
 
-        IEnumerable<CategoryModel> GetCategories();
+        IEnumerable<CategoryModel> GetCategoriesList();
+
+        IEnumerable<CategoryModel> GetCategoriesTree();
+
+        CategoryModel AddCategory(CategoryModel category);
+
+        void RemoveCategory(Guid categoryId);
+
+        CategoryModel UpdateCategory(CategoryModel category);
     }
 }

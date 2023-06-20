@@ -9,6 +9,7 @@ namespace Shop.Api
         public MappingProfile()
         {
             CreateMap<CategoryModel, CategoryDto>();
+            CreateMap<CategoryModel, CategoryInfoDto>().ReverseMap();
             CreateMap<ProductModel, ProductDto>()
                 .ForMember(
                     dest => dest.Details,

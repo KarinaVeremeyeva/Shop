@@ -18,10 +18,17 @@ namespace Shop.BLL.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<CategoryModel> GetCategories()
+        public IEnumerable<CategoryModel> GetCategoriesList()
         {
             var categories = _categoryRepository.GetAll();
             
+            return _mapper.Map<List<CategoryModel>>(categories);
+        }
+
+        public IEnumerable<CategoryModel> GetCategoriesTree()
+        {
+            var categories = _categoryRepository.GetAll().Where(c => c.ParentCategoryId == null);
+
             return _mapper.Map<List<CategoryModel>>(categories);
         }
 
@@ -36,6 +43,35 @@ namespace Shop.BLL.Services
             var categoryAndChildrenIds = GetCategoryAndChildrenIds(category);
 
             return categoryAndChildrenIds;
+        }
+
+        public CategoryModel AddCategory(CategoryModel category)
+        {
+            var categoryToAdd = _mapper.Map<Category>(category);
+            var addedCategory = _categoryRepository.Add(categoryToAdd);
+            var categoryModel = _mapper.Map<CategoryModel>(addedCategory);
+            
+            return categoryModel;
+        }
+
+        public void RemoveCategory(Guid categoryId)
+        {
+            var category = _categoryRepository.GetById(categoryId);
+            if (category == null)
+            {
+                return;
+            }
+
+            _categoryRepository.Remove(category.Id);
+        }
+
+        public CategoryModel UpdateCategory(CategoryModel category)
+        {
+            var categoryToUpdate = _mapper.Map<Category>(category);
+            var updatedCategory = _categoryRepository.Update(categoryToUpdate);
+            var categotyModel = _mapper.Map<CategoryModel>(updatedCategory);
+
+            return categotyModel;
         }
 
         private IEnumerable<Guid> GetCategoryAndChildrenIds(Category category)
