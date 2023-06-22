@@ -87,9 +87,10 @@ namespace Shop.BLL.Services
             {
                 productDetails.ForEach(pd => pd.ProductId = productToAdd.Id);
                 productToAdd.ProductDetails.AddRange(productDetails);
-                addedProduct = _productRepository.Update(addedProduct);
             }
-            var productModel = _mapper.Map<ProductModel>(addedProduct);
+
+            var result = _productRepository.GetById(addedProduct.Id);
+            var productModel = _mapper.Map<ProductModel>(result);
 
             return productModel;
         }
@@ -109,7 +110,8 @@ namespace Shop.BLL.Services
         {
             var productToUpdate = _mapper.Map<Product>(product);
             var updtedProduct = _productRepository.Update(productToUpdate);
-            var productModel = _mapper.Map<ProductModel>(updtedProduct);
+            var result = _productRepository.GetById(updtedProduct.Id);
+            var productModel = _mapper.Map<ProductModel>(result);
 
             return productModel;
         }
