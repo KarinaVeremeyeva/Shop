@@ -87,6 +87,7 @@ namespace Shop.BLL.Services
             {
                 productDetails.ForEach(pd => pd.ProductId = productToAdd.Id);
                 productToAdd.ProductDetails.AddRange(productDetails);
+                _productRepository.Update(addedProduct);
             }
 
             var result = _productRepository.GetById(addedProduct.Id);
@@ -109,9 +110,21 @@ namespace Shop.BLL.Services
         public ProductModel UpdateProduct(ProductModel product)
         {
             var productToUpdate = _mapper.Map<Product>(product);
-            var updtedProduct = _productRepository.Update(productToUpdate);
-            var result = _productRepository.GetById(updtedProduct.Id);
-            var productModel = _mapper.Map<ProductModel>(result);
+            var existingProduct = _productRepository.GetById(product.Id);
+            existingProduct.Name = productToUpdate.Name;
+            existingProduct.Description = productToUpdate.Description;
+            existingProduct.Price = productToUpdate.Price;
+            existingProduct.CategoryId = productToUpdate.CategoryId;
+
+            existingProduct.ProductDetails.RemoveAll(pd => true);
+
+            var productDetails = productToUpdate.ProductDetails.ToList();
+            productDetails.ForEach(pd => pd.ProductId = productToUpdate.Id);
+            existingProduct.ProductDetails.AddRange(productDetails);
+
+            _productRepository.Update(existingProduct);
+
+            var productModel = _mapper.Map<ProductModel>(existingProduct);
 
             return productModel;
         }
