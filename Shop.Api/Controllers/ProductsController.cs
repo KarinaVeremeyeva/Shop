@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Api.DTOs;
 using Shop.BLL.Models;
@@ -49,6 +51,60 @@ namespace Shop.Api.Controllers
             var productDto = _mapper.Map<ProductDto>(product);
 
             return Ok(productDto);
+        }
+
+        [HttpGet("admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminsOnly")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ProductInfoDto>))]
+
+        public IActionResult GetProducts()
+        {
+            var products = _productsService.GetProducts();
+            var productsDto = _mapper.Map<List<ProductInfoDto>>(products);
+
+            return Ok(productsDto);
+        }
+
+        [HttpPost("admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminsOnly")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductInfoDto))]
+        public IActionResult AddProduct(ProductInfoDto productDto)
+        {
+            var productModel = _mapper.Map<ProductModel>(productDto);
+            var addedProduct = _productsService.AddProduct(productModel);
+            var result = _mapper.Map<ProductInfoDto>(addedProduct);
+
+            return Ok(result);
+        }
+
+        [HttpDelete("{productId}/admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminsOnly")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult RemoveProduct(Guid productId)
+        {
+            _productsService.RemoveProduct(productId);
+
+            return Ok();
+        }
+
+        [HttpPut("admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminsOnly")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductInfoDto))]
+        public IActionResult UpdateProduct(ProductInfoDto productDto)
+        {
+            var productModel = _mapper.Map<ProductModel>(productDto);
+            var updatedProduct = _productsService.UpdateProduct(productModel);
+            var result = _mapper.Map<ProductInfoDto>(updatedProduct);
+
+            return Ok(result);
         }
     }
 }

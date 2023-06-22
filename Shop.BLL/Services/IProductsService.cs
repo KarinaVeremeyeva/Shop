@@ -9,5 +9,13 @@ namespace Shop.BLL.Services
         PaginatedListModel<ProductModel> GetProductByCategoryId(Guid categoryId, int pageNumber, List<SelectedFilterModel>? selectedFilters = null);
 
         ProductModel? GetProduct(Guid productId);
+
+        IEnumerable<ProductModel> GetProducts();
+
+        ProductModel AddProduct(ProductModel product);
+
+        void RemoveProduct(Guid productId);
+
+        ProductModel UpdateProduct(ProductModel product);
     }
 }

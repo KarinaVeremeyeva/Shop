@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace Shop.DataAccess.Entities
 {
     public class ProductDetail

@@ -10,6 +10,7 @@ namespace Shop.BLL.Services
         private readonly ICategoriesService _categoriesService;
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
+
         private const string PriceId = "00000000-0000-0000-0000-000000000000";
 
         public ProductsService(
@@ -64,6 +65,53 @@ namespace Shop.BLL.Services
             var paginatedList = PaginatedListModel<ProductModel>.Create(products, pageNumber, pageSize);
 
             return paginatedList;
+        }
+
+        public IEnumerable<ProductModel> GetProducts()
+        {
+            var products = _productRepository.GetAll();
+            var productsModels = _mapper.Map<List<ProductModel>>(products);
+            var productsWithDetails = GetDetailsForEachProduct(productsModels);
+
+            return productsWithDetails;
+        }
+
+        public ProductModel AddProduct(ProductModel product)
+        {
+            var productToAdd = _mapper.Map<Product>(product);
+            var productDetails = productToAdd.ProductDetails.ToList();
+            productToAdd.ProductDetails.Clear();
+
+            var addedProduct = _productRepository.Add(productToAdd);
+            if (productDetails.Any())
+            {
+                productDetails.ForEach(pd => pd.ProductId = productToAdd.Id);
+                productToAdd.ProductDetails.AddRange(productDetails);
+                addedProduct = _productRepository.Update(addedProduct);
+            }
+            var productModel = _mapper.Map<ProductModel>(addedProduct);
+
+            return productModel;
+        }
+
+        public void RemoveProduct(Guid productId)
+        {
+            var product = _productRepository.GetById(productId);
+            if (product == null)
+            {
+                return;
+            }
+
+            _productRepository.Remove(product.Id);
+        }
+
+        public ProductModel UpdateProduct(ProductModel product)
+        {
+            var productToUpdate = _mapper.Map<Product>(product);
+            var updtedProduct = _productRepository.Update(productToUpdate);
+            var productModel = _mapper.Map<ProductModel>(updtedProduct);
+
+            return productModel;
         }
 
         private IEnumerable<ProductModel> GetDetailsForEachProduct(List<ProductModel> productModels)
