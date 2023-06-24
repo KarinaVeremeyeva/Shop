@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Api.DTOs;
+using Shop.Api.Validators;
 using Shop.BLL.Models;
 using Shop.BLL.Services;
 
@@ -13,17 +14,17 @@ namespace Shop.Api.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductsService _productsService;
-        private readonly IDetailsService _detailsService;
         private readonly IMapper _mapper;
+        private readonly IValidator<ProductModel> _validator;
 
         public ProductsController(
             IProductsService productsService,
-            IDetailsService detailsService,
-            IMapper mapper)
+            IMapper mapper,
+            IValidator<ProductModel> validator)
         {
             _productsService = productsService;
-            _detailsService = detailsService;
             _mapper = mapper;
+            _validator = validator;
         }
 
         [HttpPost("category/{categoryId}")]
@@ -36,7 +37,7 @@ namespace Shop.Api.Controllers
             var productsPaginatedModels = _productsService.GetProductByCategoryId(categoryId, pageNumber, selectedFiltersModels);
             var productResultDto = _mapper.Map<ProductResultDto>(productsPaginatedModels);
 
-            var filters = _detailsService.GetFiltersByCategoryId(categoryId);
+            var filters = _productsService.GetFiltersByCategoryId(categoryId);
             var filtersDto = _mapper.Map<List<FilterDto>>(filters);
             productResultDto.Filters = filtersDto;
 
@@ -75,6 +76,12 @@ namespace Shop.Api.Controllers
         public IActionResult AddProduct(ProductInfoDto productDto)
         {
             var productModel = _mapper.Map<ProductModel>(productDto);
+            var validationErrors = _validator.Validate(productModel);
+            if (!string.IsNullOrEmpty(validationErrors))
+            {
+                return BadRequest(validationErrors);
+            }
+
             var addedProduct = _productsService.AddProduct(productModel);
             var result = _mapper.Map<ProductInfoDto>(addedProduct);
 
@@ -101,6 +108,12 @@ namespace Shop.Api.Controllers
         public IActionResult UpdateProduct(ProductInfoDto productDto)
         {
             var productModel = _mapper.Map<ProductModel>(productDto);
+            var validationErrors = _validator.Validate(productModel);
+            if (!string.IsNullOrEmpty(validationErrors))
+            {
+                return BadRequest(validationErrors);
+            }
+
             var updatedProduct = _productsService.UpdateProduct(productModel);
             var result = _mapper.Map<ProductInfoDto>(updatedProduct);
 

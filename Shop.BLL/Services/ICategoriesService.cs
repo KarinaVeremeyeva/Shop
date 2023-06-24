@@ -15,5 +15,7 @@ namespace Shop.BLL.Services
         void RemoveCategory(Guid categoryId);
 
         CategoryModel UpdateCategory(CategoryModel category);
+
+        bool ValidateCategory(Guid categoryId);
     }
 }

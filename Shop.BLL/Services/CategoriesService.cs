@@ -74,6 +74,14 @@ namespace Shop.BLL.Services
             return categotyModel;
         }
 
+        public bool ValidateCategory(Guid categoryId)
+        {
+            var categoriesIds = GetCategoriesList().Select(c => c.Id);
+            var isValid = categoriesIds.Contains(categoryId);
+
+            return isValid;
+        }
+
         private IEnumerable<Guid> GetCategoryAndChildrenIds(Category category)
         {
             var categoryId = category.Id;
