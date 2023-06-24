@@ -43,12 +43,12 @@ namespace Shop.IdentityApi.Controllers
         }
 
         [HttpGet("validate")]
-        public async Task<UserDataModel?> GetUserData()
+        public async Task<IActionResult> GetUserData()
         {
             Request.Headers.TryGetValue(Authorization, out var authorizationHeader);
             if (!authorizationHeader.Any())
             {
-                return null;
+                return Unauthorized();
             }
 
             var token = authorizationHeader.Single()?.Split(" ").Last();
@@ -56,12 +56,12 @@ namespace Shop.IdentityApi.Controllers
             var isTokenValid = _tokenService.ValidateToken(token);
             if (!isTokenValid)
             {
-                return null;
+                return Unauthorized();
             }
 
             var user = await _accoutService.GetUserData(token);
             
-            return user;
+            return Ok(user);
         }
     }
 }
