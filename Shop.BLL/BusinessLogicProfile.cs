@@ -9,12 +9,9 @@ namespace Shop.BLL
         public BusinessLogicProfile()
         {
             CreateMap<Category, CategoryModel>().ReverseMap();
-            CreateMap<Product, ProductModel>()
-                .ForMember(
-                    dest => dest.Details,
-                    opt => opt.MapFrom(src => src.Details));
+            CreateMap<Product, ProductModel>().ReverseMap();
             CreateMap<Detail, DetailModel>().ReverseMap();
-            CreateMap<ProductDetail, ProductDetailModel>();
+            CreateMap<ProductDetail, ProductDetailModel>().ReverseMap();
             CreateMap<CartItem, CartItemModel>();
         }
     }

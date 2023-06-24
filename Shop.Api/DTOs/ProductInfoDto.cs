@@ -1,6 +1,8 @@
-namespace Shop.BLL.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Shop.Api.DTOs
 {
-    public class ProductModel
+    public class ProductInfoDto
     {
         public Guid Id { get; set; }
 
@@ -14,10 +16,8 @@ namespace Shop.BLL.Models
 
         public Guid CategoryId { get; set; }
 
-        public CategoryModel Category { get; set; }
+        public CategoryInfoDto? Category { get; set; }
 
-        public List<DetailModel> Details { get; set; }
-
-        public List<ProductDetailModel> ProductDetails { get; set; }
+        public List<ProductDetailsDto>? ProductDetails { get; set; }
     }
 }

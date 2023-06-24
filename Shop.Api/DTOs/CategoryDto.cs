@@ -8,6 +8,6 @@
 
         public string? Description { get; set; }
 
-        public ICollection<CategoryDto> ChildCategories { get; set; }
+        public ICollection<CategoryDto>? ChildCategories { get; set; }
     }
 }

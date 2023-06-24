@@ -2,9 +2,7 @@ namespace Shop.Api.DTOs
 {
     public class ProductDetailsDto
     {
-        public int ProductId { get; set; }
-
-        public int DetailsId { get; set; }
+        public Guid DetailId { get; set; }
 
         public string Value { get; set; }
     }

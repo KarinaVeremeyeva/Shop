@@ -4,8 +4,6 @@ namespace Shop.BLL.Services
 {
     public interface IDetailsService
     {
-        IEnumerable<FilterModel> GetFiltersByCategoryId(Guid categoryId);
-
         DetailModel AddDetail(DetailModel detail);
 
         void RemoveDetail(Guid id);
@@ -13,5 +11,7 @@ namespace Shop.BLL.Services
         DetailModel UpdateDetail(DetailModel detail);
 
         List<DetailModel> GetDetails();
+
+        bool ValidateProductDetails(List<ProductDetailModel> productDetails);
     }
 }

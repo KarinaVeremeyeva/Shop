@@ -74,6 +74,13 @@ namespace Shop.BLL.Services
             return categotyModel;
         }
 
+        public bool ValidateCategory(Guid categoryId)
+        {
+            var category = _categoryRepository.GetById(categoryId);
+            
+            return category != null;
+        }
+
         private IEnumerable<Guid> GetCategoryAndChildrenIds(Category category)
         {
             var categoryId = category.Id;

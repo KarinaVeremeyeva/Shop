@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Api.DTOs;
+using Shop.Api.Validators;
 using Shop.BLL.Models;
 using Shop.BLL.Services;
 
@@ -14,13 +15,16 @@ namespace Shop.Api.Controllers
     {
         private readonly ICategoriesService _categoriesService;
         private readonly IMapper _mapper;
+        private readonly IValidator<CategoryInfoDto> _validator;
 
         public CategoriesController(
             ICategoriesService categoriesService,
-            IMapper mapper)
+            IMapper mapper,
+            IValidator<CategoryInfoDto> validator)
         {
             _categoriesService = categoriesService;
             _mapper = mapper;
+            _validator = validator;
         }
 
         [HttpGet]
@@ -53,6 +57,12 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryInfoDto))]
         public IActionResult AddCategory(CategoryInfoDto categoryDto)
         {
+            var validationErrors = _validator.Validate(categoryDto);
+            if (!string.IsNullOrEmpty(validationErrors))
+            {
+                return BadRequest(validationErrors);
+            }
+
             var categoryModel = _mapper.Map<CategoryModel>(categoryDto);
             var addedCategory = _categoriesService.AddCategory(categoryModel);
             var result = _mapper.Map<CategoryInfoDto>(addedCategory);
@@ -79,6 +89,12 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryInfoDto))]
         public IActionResult UpdateCategory(CategoryInfoDto categoryDto)
         {
+            var validationErrors = _validator.Validate(categoryDto);
+            if (!string.IsNullOrEmpty(validationErrors))
+            {
+                return BadRequest(validationErrors);
+            }
+
             var categoryModel = _mapper.Map<CategoryModel>(categoryDto);
             var updatedCategory = _categoriesService.UpdateCategory(categoryModel);
             var result = _mapper.Map<CategoryInfoDto>(updatedCategory);

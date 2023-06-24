@@ -2,7 +2,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Shop.Api;
+using Shop.Api.DTOs;
+using Shop.Api.Validators;
 using Shop.BLL;
+using Shop.BLL.Models;
 using Shop.BLL.Services;
 using Shop.DataAccess;
 using Shop.DataAccess.Repositories;
@@ -38,6 +41,9 @@ internal class Program
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
         });
+        builder.Services.AddScoped<IValidator<ProductModel>, ProductValidator>();
+        builder.Services.AddScoped<IValidator<DetailInfoDto>, DetailValidator>();
+        builder.Services.AddScoped<IValidator<CategoryInfoDto>, CategoryValidator>();
 
         builder.Services.AddAutoMapper(typeof(BusinessLogicProfile), typeof(MappingProfile));
 

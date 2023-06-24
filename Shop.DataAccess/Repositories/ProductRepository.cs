@@ -9,12 +9,21 @@ namespace Shop.DataAccess.Repositories
         {
         }
 
+        public override IEnumerable<Product> GetAll()
+        {
+            var products = _context.Products
+                .Include(p => p.Category)
+                .Include(d => d.ProductDetails)
+                .ToList();
+
+            return products;
+        }
+
         public override Product? GetById(Guid id)
         {
             var product = _context.Products
                 .Include(p => p.Category)
-                .Include(p => p.Details)
-                .ThenInclude(d => d.ProductDetails.Where(pd => pd.ProductId == id))
+                .Include(d => d.ProductDetails.Where(pd => pd.ProductId == id))
                 .SingleOrDefault(p => p.Id == id);
 
             return product;
@@ -26,7 +35,8 @@ namespace Shop.DataAccess.Repositories
                 .Include(p => p.Category)
                 .Include(p => p.Details)
                 .ThenInclude(d => d.ProductDetails)
-                .Where(p => categoryIds.Contains(p.CategoryId));
+                .Where(p => categoryIds.Contains(p.CategoryId))
+                .ToList();
 
             return products;
         }
