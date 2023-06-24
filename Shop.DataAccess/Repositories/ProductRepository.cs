@@ -13,8 +13,7 @@ namespace Shop.DataAccess.Repositories
         {
             var products = _context.Products
                 .Include(p => p.Category)
-                .Include(p => p.Details)
-                .ThenInclude(d => d.ProductDetails)
+                .Include(d => d.ProductDetails)
                 .ToList();
 
             return products;
@@ -24,8 +23,7 @@ namespace Shop.DataAccess.Repositories
         {
             var product = _context.Products
                 .Include(p => p.Category)
-                .Include(p => p.Details)
-                .ThenInclude(d => d.ProductDetails.Where(pd => pd.ProductId == id))
+                .Include(d => d.ProductDetails.Where(pd => pd.ProductId == id))
                 .SingleOrDefault(p => p.Id == id);
 
             return product;

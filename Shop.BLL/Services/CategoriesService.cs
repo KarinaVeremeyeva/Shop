@@ -76,10 +76,9 @@ namespace Shop.BLL.Services
 
         public bool ValidateCategory(Guid categoryId)
         {
-            var categoriesIds = GetCategoriesList().Select(c => c.Id);
-            var isValid = categoriesIds.Contains(categoryId);
-
-            return isValid;
+            var category = _categoryRepository.GetById(categoryId);
+            
+            return category != null;
         }
 
         private IEnumerable<Guid> GetCategoryAndChildrenIds(Category category)

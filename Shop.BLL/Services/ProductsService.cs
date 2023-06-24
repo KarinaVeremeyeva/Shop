@@ -144,7 +144,6 @@ namespace Shop.BLL.Services
             var commonDetailIds = details
                 .Where(detail => products.All(p => p.Details.Any(d => d.Id == detail.Id)))
                 .Select(d => d.Id)
-                .Distinct()
                 .ToHashSet();
 
             var commonFilters = details.Where(d => commonDetailIds.Contains(d.Id));
