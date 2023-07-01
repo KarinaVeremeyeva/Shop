@@ -29,9 +29,9 @@ namespace Shop.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CategoryDto>))]
-        public IActionResult GetCategoriesTree()
+        public async Task<IActionResult> GetCategoriesTreeAsync()
         {
-            var categories = _categoriesService.GetCategoriesTree();
+            var categories = await _categoriesService.GetCategoriesTreeAsync();
             var categoriesDto = _mapper.Map<List<CategoryDto>>(categories);
             
             return Ok(categoriesDto);
@@ -42,9 +42,9 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CategoryInfoDto>))]
-        public IActionResult GetCategoriesList()
+        public async Task<IActionResult> GetCategoriesListAsync()
         {
-            var categories = _categoriesService.GetCategoriesList();
+            var categories = await _categoriesService.GetCategoriesListAsync();
             var categoriesDto = _mapper.Map<List<CategoryInfoDto>>(categories);
 
             return Ok(categoriesDto);
@@ -55,16 +55,16 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryInfoDto))]
-        public IActionResult AddCategory(CategoryInfoDto categoryDto)
+        public async Task<IActionResult> AddCategoryAsync(CategoryInfoDto categoryDto)
         {
-            var validationErrors = _validator.Validate(categoryDto);
+            var validationErrors = await _validator.ValidateAsync(categoryDto);
             if (!string.IsNullOrEmpty(validationErrors))
             {
                 return BadRequest(validationErrors);
             }
 
             var categoryModel = _mapper.Map<CategoryModel>(categoryDto);
-            var addedCategory = _categoriesService.AddCategory(categoryModel);
+            var addedCategory = await _categoriesService.AddCategoryAsync(categoryModel);
             var result = _mapper.Map<CategoryInfoDto>(addedCategory);
 
             return Ok(result);
@@ -75,9 +75,9 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult RemoveCategory(Guid categoryId)
+        public async Task<IActionResult> RemoveCategoryAsync(Guid categoryId)
         {
-            _categoriesService.RemoveCategory(categoryId);
+            await _categoriesService.RemoveCategoryAsync(categoryId);
 
             return Ok();
         }
@@ -87,16 +87,16 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryInfoDto))]
-        public IActionResult UpdateCategory(CategoryInfoDto categoryDto)
+        public async Task<IActionResult> UpdateCategoryAsync(CategoryInfoDto categoryDto)
         {
-            var validationErrors = _validator.Validate(categoryDto);
+            var validationErrors = await _validator.ValidateAsync(categoryDto);
             if (!string.IsNullOrEmpty(validationErrors))
             {
                 return BadRequest(validationErrors);
             }
 
             var categoryModel = _mapper.Map<CategoryModel>(categoryDto);
-            var updatedCategory = _categoriesService.UpdateCategory(categoryModel);
+            var updatedCategory = await _categoriesService.UpdateCategoryAsync(categoryModel);
             var result = _mapper.Map<CategoryInfoDto>(updatedCategory);
             
             return Ok(result);

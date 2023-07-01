@@ -4,14 +4,14 @@ namespace Shop.BLL.Services
 {
     public interface IDetailsService
     {
-        DetailModel AddDetail(DetailModel detail);
+        Task<DetailModel> AddDetailAsync(DetailModel detail);
 
-        void RemoveDetail(Guid id);
+        Task RemoveDetailAsync(Guid id);
 
-        DetailModel UpdateDetail(DetailModel detail);
+        Task<DetailModel> UpdateDetailAsync(DetailModel detail);
 
-        List<DetailModel> GetDetails();
+        Task<List<DetailModel>> GetDetailsAsync();
 
-        bool ValidateProductDetails(List<ProductDetailModel> productDetails);
+        Task<bool> ValidateProductDetailsAsync(List<ProductDetailModel> productDetails);
     }
 }

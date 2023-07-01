@@ -4,18 +4,18 @@ namespace Shop.BLL.Services
 {
     public interface ICategoriesService
     {
-        IEnumerable<Guid> GetCategoryAndChildrenIds(Guid categoryId);
+        Task<IEnumerable<Guid>> GetCategoryAndChildrenIdsAsync(Guid categoryId);
 
-        IEnumerable<CategoryModel> GetCategoriesList();
+        Task<IEnumerable<CategoryModel>> GetCategoriesListAsync();
 
-        IEnumerable<CategoryModel> GetCategoriesTree();
+        Task<IEnumerable<CategoryModel>> GetCategoriesTreeAsync();
 
-        CategoryModel AddCategory(CategoryModel category);
+        Task<CategoryModel> AddCategoryAsync(CategoryModel category);
 
-        void RemoveCategory(Guid categoryId);
+        Task RemoveCategoryAsync(Guid categoryId);
 
-        CategoryModel UpdateCategory(CategoryModel category);
+        Task<CategoryModel> UpdateCategoryAsync(CategoryModel category);
 
-        bool ValidateCategory(Guid categoryId);
+        Task<bool> ValidateCategoryAsync(Guid categoryId);
     }
 }

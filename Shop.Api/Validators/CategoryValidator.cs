@@ -4,7 +4,7 @@ namespace Shop.Api.Validators
 {
     public class CategoryValidator : IValidator<CategoryInfoDto>
     {
-        public string Validate(CategoryInfoDto entity)
+        public Task<string> ValidateAsync(CategoryInfoDto entity)
         {
             var validationErrors = new List<string>();
             if (string.IsNullOrEmpty(entity.Name))
@@ -12,7 +12,7 @@ namespace Shop.Api.Validators
                 validationErrors.Add("Category name should not be empty");
             }
 
-            return string.Join(", ", validationErrors);
+            return Task.FromResult(string.Join(", ", validationErrors));
         }
     }
 }

@@ -28,11 +28,11 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CartItemDto))]
-        public IActionResult AddToCart(Guid productId)
+        public async Task<IActionResult> AddToCartAsync(Guid productId)
         {
             var email = User.Claims.First(type => type.Type == ClaimTypes.Email).Value;
 
-            var updatedCartItem = _cartItemsService.AddToCart(productId, email);
+            var updatedCartItem = await _cartItemsService.AddToCartAsync(productId, email);
             var cartItemDto = _mapper.Map<CartItemDto>(updatedCartItem);
 
             return Ok(cartItemDto);
@@ -43,11 +43,11 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult RemoveFromCart(Guid productId)
+        public async Task<IActionResult> RemoveFromCartAsync(Guid productId)
         {
             var email = User.Claims.First(type => type.Type == ClaimTypes.Email).Value;
 
-            _cartItemsService.RemoveFromCard(productId, email);
+            await _cartItemsService.RemoveFromCardAsync(productId, email);
 
             return Ok();
         }
@@ -57,11 +57,11 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult ReduceProductCount(Guid productId)
+        public async Task<IActionResult> ReduceProductCountAsync(Guid productId)
         {
             var email = User.Claims.First(type => type.Type == ClaimTypes.Email).Value;
 
-            _cartItemsService.ReduceProductCount(productId, email);
+            await _cartItemsService.ReduceProductCountAsync(productId, email);
 
             return Ok();
         }
@@ -71,11 +71,11 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CartItemDto>))]
-        public IActionResult GetCartItems()
+        public async Task<IActionResult> GetCartItemsAsync()
         {
             var email = User.Claims.First(type => type.Type == ClaimTypes.Email).Value;
 
-            var items = _cartItemsService.GetCartItems(email);
+            var items = await _cartItemsService.GetCartItemsAsync(email);
             var result = _mapper.Map<List<CartItemDto>>(items);
             
             return Ok(result);
@@ -86,7 +86,7 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDataDto))]
-        public IActionResult GetAllUserData()
+        public async Task<IActionResult> GetAllUserDataAsync()
         {
             var email = User.Claims.First(type => type.Type == ClaimTypes.Email).Value;
             var role = User.Claims.First(type => type.Type == ClaimTypes.Role).Value;
@@ -95,8 +95,8 @@ namespace Shop.Api.Controllers
             {
                 Email = email,
                 Role = role,
-                TotalProductsCount = _cartItemsService.GetTotalCount(email),
-                TotalProductsPrice = _cartItemsService.GetTotalPrice(email),
+                TotalProductsCount = await _cartItemsService.GetTotalCountAsync(email),
+                TotalProductsPrice = await _cartItemsService.GetTotalPriceAsync(email),
             };
 
             return Ok(result);

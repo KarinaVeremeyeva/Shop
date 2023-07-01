@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop.DataAccess.Entities;
+using System;
+using System.Linq.Expressions;
 
 namespace Shop.DataAccess.Repositories
 {
@@ -14,41 +16,64 @@ namespace Shop.DataAccess.Repositories
             _entities = _context.Set<TEntity>();
         }
 
-        public virtual TEntity Add(TEntity entity)
+        public virtual async Task<TEntity> AddAsync(TEntity entity)
         {
-            _entities.Add(entity);
-            _context.SaveChanges();
+            await _entities.AddAsync(entity);
+            await _context.SaveChangesAsync();
 
             return entity;
         }
 
-        public virtual void Remove(Guid id)
+        public virtual async Task RemoveAsync(Guid id)
         {
-            var entity = _entities.SingleOrDefault(entity => entity.Id == id);
+            var entity = await _entities.SingleOrDefaultAsync(entity => entity.Id == id);
             if (entity == null)
             {
                 return;
             }
             _entities.Remove(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public virtual IEnumerable<TEntity> GetAll()
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            return _entities.ToList();
+            return await _entities.ToListAsync();
         }
 
-        public virtual TEntity? GetById(Guid id)
+        public virtual async Task<TEntity?> GetByIdAsync(Guid id)
         {
-            return _entities.FirstOrDefault(entity => entity.Id == id);
+            var entity = await _entities.FirstOrDefaultAsync(entity => entity.Id == id);
+            
+            return entity;
         }
 
-        public virtual TEntity Update(TEntity entity)
+        public virtual async Task<TEntity> UpdateAsync(TEntity entity)
         {
             _entities.Update(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return entity;
         }
+
+        public virtual async Task<IEnumerable<TEntity>> GetWhereAsync(
+            Expression<Func<TEntity, bool>> predicate,
+            params Expression<Func<TEntity, object>> [] loadStrategies)
+        {
+            var query = _entities.AsQueryable();
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            foreach (var loadStrategy in loadStrategies)
+            {
+                query = query.Include(loadStrategy);
+            }
+
+            return await query.ToListAsync();
+        }
+
+        protected IQueryable<TEntity> GetEntityQuery() => _entities.AsQueryable();
     }
 }

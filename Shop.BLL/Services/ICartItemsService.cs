@@ -4,16 +4,16 @@ namespace Shop.BLL.Services
 {
     public interface ICartItemsService
     {
-        CartItemModel AddToCart(Guid productId, string email);
+        Task<CartItemModel> AddToCartAsync(Guid productId, string email);
 
-        void RemoveFromCard(Guid productId, string email);
+        Task RemoveFromCardAsync(Guid productId, string email);
 
-        void ReduceProductCount(Guid productId, string email);
+        Task ReduceProductCountAsync(Guid productId, string email);
 
-        List<CartItemModel> GetCartItems(string email);
+        Task<List<CartItemModel>> GetCartItemsAsync(string email);
 
-        decimal GetTotalPrice(string email);
+        Task<decimal> GetTotalPriceAsync(string email);
 
-        int GetTotalCount(string email);
+        Task<int> GetTotalCountAsync(string email);
     };
 }

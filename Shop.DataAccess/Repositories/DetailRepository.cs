@@ -10,16 +10,16 @@ namespace Shop.DataAccess.Repositories
         {
         }
 
-        public override IEnumerable<Detail> GetAll()
+        public override async Task<IEnumerable<Detail>> GetAllAsync()
         {
-            var details = _context.Details.ToList();
+            var details = await _context.Details.ToListAsync();
 
             return details;
         }
 
-        public override Detail GetById(Guid id)
+        public override async Task<Detail?> GetByIdAsync(Guid id)
         {
-            var detail = _context.Details.SingleOrDefault(d => d.Id == id);
+            var detail = await _context.Details.SingleOrDefaultAsync(d => d.Id == id);
 
             return detail;
         }

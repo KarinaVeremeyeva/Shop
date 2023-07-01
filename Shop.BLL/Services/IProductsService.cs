@@ -4,20 +4,20 @@ namespace Shop.BLL.Services
 {
     public interface IProductsService
     {
-        IEnumerable<ProductModel> GetProductByCategoryId(Guid categoryId, List<SelectedFilterModel>? selectedFilters = null);
+        Task<IEnumerable<ProductModel>> GetProductByCategoryIdAsync(Guid categoryId, List<SelectedFilterModel>? selectedFilters = null);
 
-        PaginatedListModel<ProductModel> GetProductByCategoryId(Guid categoryId, int pageNumber, List<SelectedFilterModel>? selectedFilters = null);
+        Task<PaginatedListModel<ProductModel>> GetProductByCategoryIdAsync(Guid categoryId, int pageNumber, List<SelectedFilterModel>? selectedFilters = null);
 
-        IEnumerable<FilterModel> GetFiltersByCategoryId(Guid categoryId);
+        Task<IEnumerable<FilterModel>> GetFiltersByCategoryIdAsync(Guid categoryId);
 
-        ProductModel? GetProduct(Guid productId);
+        Task<ProductModel?> GetProductAsync(Guid productId);
 
-        IEnumerable<ProductModel> GetProducts();
+        Task<IEnumerable<ProductModel>> GetProductsAsync();
 
-        ProductModel AddProduct(ProductModel product);
+        Task<ProductModel> AddProductAsync(ProductModel product);
 
-        void RemoveProduct(Guid productId);
+        Task RemoveProductAsync(Guid productId);
 
-        ProductModel UpdateProduct(ProductModel product);
+        Task<ProductModel> UpdateProductAsync(ProductModel product);
     }
 }

@@ -31,7 +31,7 @@ namespace Shop.Api
                 return AuthenticateResult.Fail("Token is null");
             }
 
-            var userData = await _identityApiService.GetUserData(token);
+            var userData = await _identityApiService.GetUserDataAsync(token);
             if (userData == null)
             {
                 return AuthenticateResult.Fail("Unauthorized");

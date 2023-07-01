@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop.DataAccess.Entities;
+using System.Linq.Expressions;
 
 namespace Shop.DataAccess.Repositories
 {
@@ -10,22 +11,27 @@ namespace Shop.DataAccess.Repositories
         {
         }
 
-        public override CartItem? GetById(Guid id)
+        public override async Task<CartItem?> GetByIdAsync(Guid id)
         {
-            var cartItem = _context.ShoppingCartItems
+            var cartItem = await _context.ShoppingCartItems
                .Include(c => c.Product)
-               .SingleOrDefault(p => p.Id == id);
+               .SingleOrDefaultAsync(p => p.Id == id);
 
             return cartItem;
         }
 
-        public override IEnumerable<CartItem> GetAll()
+        public override async Task<IEnumerable<CartItem>> GetAllAsync()
         {
-            var cartItems = _context.ShoppingCartItems
+            var cartItems = await _context.ShoppingCartItems
                 .Include(c => c.Product)
-                .ToList();
+                .ToListAsync();
 
             return cartItems;
+        }
+
+        public async Task<IEnumerable<CartItem>> GetWhereAsync(Expression<Func<CartItem, bool>> predicate)
+        {
+            return await base.GetWhereAsync(predicate, q => q.Product);
         }
     }
 }

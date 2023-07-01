@@ -14,15 +14,15 @@ namespace Shop.Api.Validators
             _categoriesService = categoriesService;
         }
 
-        public string Validate(ProductModel entityModel)
+        public async Task<string> ValidateAsync(ProductModel entityModel)
         {
             var validationErrors = new List<string>();
-            if (!_detailsService.ValidateProductDetails(entityModel.ProductDetails))
+            if (!(await _detailsService.ValidateProductDetailsAsync(entityModel.ProductDetails)))
             {
                 validationErrors.Add("Product detail does not exist");
             }
 
-            if (!_categoriesService.ValidateCategory(entityModel.CategoryId))
+            if (!(await _categoriesService.ValidateCategoryAsync(entityModel.CategoryId)))
             {
                 validationErrors.Add("Category does not exist");
             }
