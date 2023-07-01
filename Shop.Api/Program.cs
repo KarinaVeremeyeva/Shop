@@ -8,7 +8,6 @@ using Shop.BLL;
 using Shop.BLL.Models;
 using Shop.BLL.Services;
 using Shop.DataAccess;
-using Shop.DataAccess.Repositories;
 using System.Net.Http.Headers;
 
 internal class Program
@@ -21,22 +20,20 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        var identityString = builder.Configuration.GetSection("ApiSettings:IdentityBaseAddress").Value;
+
         builder.Services.AddDbContext<ShopContext>(options =>
         {
             options.UseSqlServer(connectionString);
         });
-
-        builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-        builder.Services.AddScoped<IProductRepository, ProductRepository>();
-        builder.Services.AddScoped<ICartItemsRepository, CartItemRepository>();
-        builder.Services.AddScoped<IDetailRepository, DetailRepository>();
+        builder.Services.AddRepositories();
         builder.Services.AddScoped<ICategoriesService, CategoriesService>();
         builder.Services.AddScoped<IProductsService, ProductsService>();
         builder.Services.AddScoped<ICartItemsService, CartItemsService>();
         builder.Services.AddScoped<IDetailsService, DetailsService>();
         builder.Services.AddHttpClient<IIdentityApiService, IdentityApiService>(client =>
         {
-            client.BaseAddress = new Uri("https://localhost:7017/");
+            client.BaseAddress = new Uri(identityString);
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
