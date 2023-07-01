@@ -23,7 +23,7 @@ namespace Shop.DataAccess.Tests
         }
 
         [Test]
-        public void GetById_GetProductById_ReturnsProduct()
+        public async Task GetByIdAsync_GetProductById_ReturnsProduct()
         {
             // arrange
             var productId = Guid.Parse("ee83d6ba-c84b-4a60-99d8-76a9833ca11a");
@@ -35,27 +35,27 @@ namespace Shop.DataAccess.Tests
             var expected = product.Id;
 
             // act
-            var actual = ProductRepository.GetById(product.Id);
+            var actual = await ProductRepository.GetByIdAsync(product.Id);
 
             // assert
             Assert.That(actual.Id, Is.EqualTo(expected));
         }
 
         [Test]
-        public void GetById_PassNotExistingProductId_ReturnsNull()
+        public async Task GetByIdAsync_PassNotExistingProductId_ReturnsNull()
         {
             // arrange
             var productId = Guid.Parse("00000000-0000-0000-0000-000000000000");
 
             // act
-            var actual = ProductRepository.GetById(productId);
+            var actual = await ProductRepository.GetByIdAsync(productId);
 
             // assert
             Assert.That(actual, Is.Null);
         }
 
         [Test]
-        public void GetAll_GetAllProducts_ReturnsAllProducts()
+        public async Task GetAllAsync_GetAllProducts_ReturnsAllProducts()
         {
             // arrange
             var products = TestData.GetTestProducts();
@@ -66,14 +66,14 @@ namespace Shop.DataAccess.Tests
             var expected = Context.Products;
 
             // act
-            var actual = ProductRepository.GetAll();
+            var actual = await ProductRepository.GetAllAsync();
 
             // assert
             Assert.That(actual.First().Id, Is.EqualTo(expected.First().Id));
         }
 
         [Test]
-        public void GetProductsByCategoryIds_PassExistingCategoryIds_ReturnsProducts()
+        public async Task GetProductsByCategoryIdsAsync_PassExistingCategoryIds_ReturnsProducts()
         {
             // arrange
             var products = TestData.GetTestProducts();
@@ -87,7 +87,7 @@ namespace Shop.DataAccess.Tests
             Context.SaveChanges();
 
             // act
-            var actual = ProductRepository.GetProductsByCategoryIds(categoryIds);
+            var actual = await ProductRepository.GetProductsByCategoryIdsAsync(categoryIds);
 
             // assert
             Assert.That(actual.Count(), Is.EqualTo(2));
@@ -95,7 +95,7 @@ namespace Shop.DataAccess.Tests
         }
 
         [Test]
-        public void GetProductsByCategoryIds_PassNotExistingCategoryIds_ReturnsEmptyList()
+        public async Task GetProductsByCategoryIdsAsync_PassNotExistingCategoryIds_ReturnsEmptyList()
         {
             // arrange
             var products = TestData.GetTestProducts();
@@ -109,14 +109,14 @@ namespace Shop.DataAccess.Tests
             Context.SaveChanges();
 
             // act
-            var actual = ProductRepository.GetProductsByCategoryIds(categoryIds);
+            var actual = await ProductRepository.GetProductsByCategoryIdsAsync(categoryIds);
 
             // assert
             Assert.That(actual, Is.EqualTo(new List<Product>()));
         }
 
         [Test]
-        public void GetProductsByCategoryIds_PassNullCategoryIds_ReturnsEmptyList()
+        public async Task GetProductsByCategoryIdsAsync_PassNullCategoryIds_ReturnsEmptyList()
         {
             // arrange
             var products = TestData.GetTestProducts();
@@ -126,20 +126,20 @@ namespace Shop.DataAccess.Tests
             Context.SaveChanges();
 
             // act
-            var actual = ProductRepository.GetProductsByCategoryIds(categoryIds);
+            var actual = await ProductRepository.GetProductsByCategoryIdsAsync(categoryIds);
 
             // assert
             Assert.That(actual, Is.EqualTo(new List<Product>()));
         }
 
         [Test]
-        public void Add_AddProduct_ProductWasAdded()
+        public async Task AddAsync_AddProduct_ProductWasAdded()
         {
             // arrange
             var productId = Guid.Parse("ee83d6ba-c84b-4a60-99d8-76a9833ca11a");
             var product = TestData.GetTestProduct(productId);
 
-            ProductRepository.Add(product);
+            await ProductRepository.AddAsync(product);
 
             var expected = product.Id;
 
@@ -151,7 +151,7 @@ namespace Shop.DataAccess.Tests
         }
 
         [Test]
-        public void Update_UpdateProduct_ProductWasUpdated()
+        public async Task UpdateAsync_UpdateProduct_ProductWasUpdated()
         {
             // arrange
             var productId = Guid.Parse("ee83d6ba-c84b-4a60-99d8-76a9833ca11a");
@@ -162,7 +162,7 @@ namespace Shop.DataAccess.Tests
 
             var productToUpdate = Context.Products.First(p => p.Id == product.Id);
             productToUpdate.Name = "Updated Product";
-            ProductRepository.Update(productToUpdate);
+            await ProductRepository.UpdateAsync(productToUpdate);
 
             var expected = product;
 
@@ -174,7 +174,7 @@ namespace Shop.DataAccess.Tests
         }
 
         [Test]
-        public void Remove_RemoveProduct_ProductWasRemoved()
+        public async Task RemoveAsync_RemoveProduct_ProductWasRemoved()
         {
             // arrange
             var productId = Guid.Parse("ee83d6ba-c84b-4a60-99d8-76a9833ca11a");
@@ -182,7 +182,7 @@ namespace Shop.DataAccess.Tests
 
             Context.Products.Add(product);
             Context.SaveChanges();
-            ProductRepository.Remove(product.Id);
+            await ProductRepository.RemoveAsync(product.Id);
 
             // act
             var actual = Context.Products.FirstOrDefault(p => p.Id == product.Id);
@@ -192,11 +192,11 @@ namespace Shop.DataAccess.Tests
         }
 
         [Test]
-        public void Remove_RemoveNotExistingProduct_ProductWasNotRemoved()
+        public async Task RemoveAsync_RemoveNotExistingProduct_ProductWasNotRemoved()
         {
             // arrange
             var productId = Guid.Parse("00000000-0000-0000-0000-000000000000");
-            ProductRepository.Remove(productId);
+            await ProductRepository.RemoveAsync(productId);
 
             // act
             var actual = Context.Products.FirstOrDefault(p => p.Id == productId);
