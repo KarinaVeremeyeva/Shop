@@ -59,7 +59,7 @@ namespace Shop.IdentityApi.Controllers
                 return Unauthorized();
             }
 
-            var user = await _accoutService.GetUserData(token);
+            var user = await _accoutService.GetUserDataAsync(token);
             
             return Ok(user);
         }

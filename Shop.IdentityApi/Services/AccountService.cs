@@ -31,7 +31,7 @@ namespace Shop.IdentityApi.Services
             await _signInManager.SignOutAsync();
         }
 
-        public async Task<UserDataModel> GetUserData(string token)
+        public async Task<UserDataModel> GetUserDataAsync(string token)
         {
             var handler = new JwtSecurityTokenHandler();
             var jwtSecurityToken = handler.ReadJwtToken(token);
