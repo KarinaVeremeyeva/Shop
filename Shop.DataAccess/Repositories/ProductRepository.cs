@@ -23,7 +23,8 @@ namespace Shop.DataAccess.Repositories
         {
             var product = await _context.Products
                 .Include(p => p.Category)
-                .Include(d => d.ProductDetails.Where(pd => pd.ProductId == id))
+                .Include(p => p.Details)
+                .ThenInclude(d => d.ProductDetails.Where(pd => pd.ProductId == id))
                 .SingleOrDefaultAsync(p => p.Id == id);
 
             return product;

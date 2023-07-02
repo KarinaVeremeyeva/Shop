@@ -194,7 +194,7 @@ namespace Shop.DataAccess
                     Name = "Apple iPhone 13",
                     Description = "This is a description for Apple iPhone 13.",
                     Price = 900,
-                    PhotoUrl = null,
+                    PhotoUrl = "https://img.5element.by/import/images/ut/goods/good_b5813643-828d-11ed-bb97-0050560120e8/-1.jpg",
                     CategoryId = Guid.Parse("e05ab76b-f53b-41c8-aac1-e8062ae75f54")
                 },
                 new Product
@@ -203,7 +203,7 @@ namespace Shop.DataAccess
                     Name = "Samsung Galaxy M32",
                     Description = "This is a description for Samsung Galaxy M32",
                     Price = 300,
-                    PhotoUrl = null,
+                    PhotoUrl = "https://img.5element.by/import/images/ut/goods/good_955608f1-247a-11ed-bb95-0050560120e8/sm-m325fzkgcau-chernyy-128gb-telefon-gsm-samsung-galaxy-m32-1.jpg",
                     CategoryId = Guid.Parse("e05ab76b-f53b-41c8-aac1-e8062ae75f54")
                 },
                 new Product
@@ -212,7 +212,7 @@ namespace Shop.DataAccess
                     Name = "Xiaomi Redmi Note 12",
                     Description = "This is a description for Xiaomi Redmi Note 12",
                     Price = 300,
-                    PhotoUrl = null,
+                    PhotoUrl = "https://img.5element.by/import/images/ut/goods/good_1772e206-c950-11ed-bb90-005056012464/redmi-note-12-6gb-128gb-nfc-onyx-gray-ru-telefon-gsm-xiaomi-1.jpg",
                     CategoryId = Guid.Parse("e05ab76b-f53b-41c8-aac1-e8062ae75f54")
                 },
                 new Product

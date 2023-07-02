@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Shop.Api.DTOs;
 using Shop.BLL.Models;
-using Shop.DataAccess.Entities;
 
 namespace Shop.Api
 {
