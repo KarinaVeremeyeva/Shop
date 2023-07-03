@@ -2,6 +2,6 @@
 {
     public interface IValidator<TEntityModel>
     {
-        string Validate(TEntityModel entity);
+        Task<string> ValidateAsync(TEntityModel entity);
     }
 }

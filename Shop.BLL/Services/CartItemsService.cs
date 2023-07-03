@@ -21,14 +21,15 @@ namespace Shop.BLL.Services
             _mapper = mapper;
         }
 
-        public CartItemModel AddToCart(Guid productId, string email)
+        public async Task<CartItemModel> AddToCartAsync(Guid productId, string email)
         {
-            var checkProductId = _productRepository.GetById(productId)
+            var checkProductId = await _productRepository.GetByIdAsync(productId)
                 ?? throw new ArgumentException($"Product {productId} doesn't exist.");
 
-            var cartItem = _cartItemsRepository.GetAll()
-                .SingleOrDefault(c => c.UserEmail == email && c.ProductId == productId);
-            
+            var cartItems = await _cartItemsRepository
+                .GetWhereAsync(c => c.UserEmail == email && c.ProductId == productId);
+            var cartItem = cartItems.SingleOrDefault();
+
             if (cartItem == null)
             {
                 cartItem = new CartItem
@@ -39,7 +40,7 @@ namespace Shop.BLL.Services
                     Quantity = 1
                 };
 
-                var addedCartItem = _cartItemsRepository.Add(cartItem);
+                var addedCartItem = await _cartItemsRepository.AddAsync(cartItem);
                 var cartItemModel = _mapper.Map<CartItemModel>(addedCartItem);
 
                 return cartItemModel;
@@ -48,30 +49,32 @@ namespace Shop.BLL.Services
             {
                 cartItem.Quantity++;
 
-                var updatedCartItem = _cartItemsRepository.Update(cartItem);
+                var updatedCartItem = await _cartItemsRepository.UpdateAsync(cartItem);
                 var cartItemModel = _mapper.Map<CartItemModel>(updatedCartItem);
 
                 return cartItemModel;
             }
         }
 
-        public void RemoveFromCard(Guid productId, string email)
+        public async Task RemoveFromCardAsync(Guid productId, string email)
         {
-            var cartItem = _cartItemsRepository.GetAll()
-                .SingleOrDefault(c => c.UserEmail == email && c.ProductId == productId);
+            var cartItems = await _cartItemsRepository
+                .GetWhereAsync(c => c.UserEmail == email && c.ProductId == productId);
+            var cartItem = cartItems.SingleOrDefault();
 
             if (cartItem == null)
             {
                 return;
             }
 
-            _cartItemsRepository.Remove(cartItem.Id);
+            await _cartItemsRepository.RemoveAsync(cartItem.Id);
         }
 
-        public void ReduceProductCount(Guid productId, string email)
+        public async Task ReduceProductCountAsync(Guid productId, string email)
         {
-            var cartItem = _cartItemsRepository.GetAll()
-                .SingleOrDefault(c => c.UserEmail == email && c.ProductId == productId);
+            var cartItems = await _cartItemsRepository
+                .GetWhereAsync(c => c.UserEmail == email && c.ProductId == productId);
+            var cartItem = cartItems.SingleOrDefault();
 
             if (cartItem == null)
             {
@@ -81,36 +84,35 @@ namespace Shop.BLL.Services
             if (cartItem.Quantity > 1)
             {
                 cartItem.Quantity--;
-                _cartItemsRepository.Update(cartItem);
+                await _cartItemsRepository.UpdateAsync(cartItem);
             }
             else
             {
-                _cartItemsRepository.Remove(cartItem.Id);
+                await _cartItemsRepository.RemoveAsync(cartItem.Id);
             }
         }
 
-        public List<CartItemModel> GetCartItems(string email)
+        public async Task<List<CartItemModel>> GetCartItemsAsync(string email)
         {
-            var cartItems = _cartItemsRepository.GetAll()
-                .Where(c => c.UserEmail == email);
+            var cartItems = await _cartItemsRepository.GetWhereAsync(c => c.UserEmail == email);
 
             return _mapper.Map<List<CartItemModel>>(cartItems);
         }
 
-        public decimal GetTotalPrice(string email)
+        public async Task<decimal> GetTotalPriceAsync(string email)
         {
-            var totalPrice = _cartItemsRepository.GetAll()
-                .Where(c => c.UserEmail == email)
+            var cartItems = await _cartItemsRepository.GetWhereAsync(c => c.UserEmail == email);
+            var totalPrice = cartItems
                 .Select(c => c.Quantity * c.Product.Price)
                 .Sum();
 
             return totalPrice;
         }
 
-        public int GetTotalCount(string email)
+        public async Task<int> GetTotalCountAsync(string email)
         {
-            var totalCount = _cartItemsRepository.GetAll()
-                .Where(c => c.UserEmail == email)
+            var cartItems = await _cartItemsRepository.GetWhereAsync(c => c.UserEmail == email);
+            var totalCount = cartItems
                 .Select(c => c.Quantity)
                 .Sum();
 

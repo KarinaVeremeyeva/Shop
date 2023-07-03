@@ -14,7 +14,7 @@ namespace Shop.BLL.Services
             _httpClient = httpClient;
         }
 
-        public async Task<UserDataModel?> GetUserData(string token)
+        public async Task<UserDataModel?> GetUserDataAsync(string token)
         {
             if (token == null)
             {

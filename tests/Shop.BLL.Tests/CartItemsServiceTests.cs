@@ -3,6 +3,7 @@ using Moq;
 using Shop.BLL.Services;
 using Shop.DataAccess.Entities;
 using Shop.DataAccess.Repositories;
+using System.Linq.Expressions;
 
 namespace Shop.BLL.Tests
 {
@@ -23,7 +24,7 @@ namespace Shop.BLL.Tests
         }
 
         [Test]
-        public void AddToCart_AddProductToCart_CartItemAdded()
+        public async Task AddToCartAsync_AddProductToCart_CartItemAdded()
         {
             // arrange
             var productId = Guid.Parse("a79fd279-390d-4416-ba08-c3239bf7ed37");
@@ -31,53 +32,53 @@ namespace Shop.BLL.Tests
 
             var mockCartRepository = new Mock<ICartItemsRepository>();
             mockCartRepository
-                .Setup(x => x.GetAll())
-                .Returns(new List<CartItem>());
-            mockCartRepository.Setup(x => x.Add(It.IsAny<CartItem>()));
+                .Setup(x => x.GetWhereAsync(It.IsAny<Expression<Func<CartItem, bool>>>()))
+                .ReturnsAsync(new List<CartItem>());
+            mockCartRepository.Setup(x => x.AddAsync(It.IsAny<CartItem>()));
 
             var mockProductRepository = new Mock<IProductRepository>();
             mockProductRepository
-                .Setup(x => x.GetById(It.IsAny<Guid>()))
-                .Returns(new Product());
+                .Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(new Product());
 
             var service = new CartItemsService(mockCartRepository.Object, mockProductRepository.Object, _mapper);
 
             // act
-            service.AddToCart(productId, email);
+            await service.AddToCartAsync(productId, email);
 
             // assert
-            mockCartRepository.Verify(x => x.Add(It.Is<CartItem>(cartItem => cartItem.Quantity == 1)));
+            mockCartRepository.Verify(x => x.AddAsync(It.Is<CartItem>(cartItem => cartItem.Quantity == 1)));
         }
         [Test]
-        public void AddToCart_AddProductToCart_QuantityShouldIncrease()
+        public async Task AddToCartAsync_AddProductToCart_QuantityShouldIncrease()
         {
             // arrange
             var productId = Guid.Parse("a79fd279-390d-4416-ba08-c3239bf7ed37");
             var email = "test@email";
-            var testCartItems = TestData.GetTestCartItems();
+            var testCartItems = TestData.GetTestCartItems().Take(1);
 
             var mockCartRepository = new Mock<ICartItemsRepository>();
             mockCartRepository
-                .Setup(x => x.GetAll())
-                .Returns(testCartItems);
-            mockCartRepository.Setup(x => x.Update(It.IsAny<CartItem>()));
+                .Setup(x => x.GetWhereAsync(It.IsAny<Expression<Func<CartItem, bool>>>()))
+                .ReturnsAsync(testCartItems);
+            mockCartRepository.Setup(x => x.UpdateAsync(It.IsAny<CartItem>()));
 
             var mockProductRepository = new Mock<IProductRepository>();
             mockProductRepository
-                .Setup(x => x.GetById(It.IsAny<Guid>()))
-                .Returns(new Product());
+                .Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(new Product());
 
             var service = new CartItemsService(mockCartRepository.Object, mockProductRepository.Object, _mapper);
 
             // act
-            service.AddToCart(productId, email);
+            await service.AddToCartAsync(productId, email);
 
             // assert
-            mockCartRepository.Verify(x => x.Update(It.Is<CartItem>(cartItem => cartItem.Quantity == 3)));
+            mockCartRepository.Verify(x => x.UpdateAsync(It.Is<CartItem>(cartItem => cartItem.Quantity == 3)));
         }
 
         [Test]
-        public void AddToCart_PassNotExistingProductId_ThrowsException()
+        public void AddToCartAsync_PassNotExistingProductId_ThrowsException()
         {
             // arrange
             var mockCartRepository = new Mock<ICartItemsRepository>();
@@ -88,39 +89,39 @@ namespace Shop.BLL.Tests
             var email = "test@email";
 
             // act and assert
-            Assert.That(() => service.AddToCart(productId, email),
+            Assert.That(() => service.AddToCartAsync(productId, email),
                 Throws.Exception
                     .TypeOf<ArgumentException>()
                     .With.Property("Message").EqualTo($"Product {productId} doesn't exist."));
         }
 
         [Test]
-        public void RemoveFromCard_RemoveProductFromCard_ProductRemovedFromCart()
+        public async Task RemoveFromCardAsync_RemoveProductFromCard_ProductRemovedFromCart()
         {
             // arrange
             var productId = Guid.Parse("a79fd279-390d-4416-ba08-c3239bf7ed37");
             var email = "test@email";
-            var testCartItems = TestData.GetTestCartItems();
+            var testCartItems = TestData.GetTestCartItems().Take(1);
 
             var mockCartRepository = new Mock<ICartItemsRepository>();
             mockCartRepository
-                .Setup(x => x.GetAll())
-                .Returns(testCartItems);
-            mockCartRepository.Setup(x => x.Remove(It.IsAny<Guid>()));
+                .Setup(x => x.GetWhereAsync(It.IsAny<Expression<Func<CartItem, bool>>>()))
+                .ReturnsAsync(testCartItems);
+            mockCartRepository.Setup(x => x.RemoveAsync(It.IsAny<Guid>()));
 
             var mockProductRepository = new Mock<IProductRepository>();
             
             var service = new CartItemsService(mockCartRepository.Object, mockProductRepository.Object, _mapper);
 
             // act
-            service.RemoveFromCard(productId, email);
+            await service.RemoveFromCardAsync(productId, email);
 
             // assert
-            mockCartRepository.Verify(x => x.Remove(It.IsAny<Guid>()));
+            mockCartRepository.Verify(x => x.RemoveAsync(It.IsAny<Guid>()));
         }
 
         [Test]
-        public void RemoveFromCard_PassNotExistingProductId_Returns()
+        public async Task RemoveFromCardAsync_PassNotExistingProductId_Returns()
         {
             // arrange
             var productId = Guid.Parse("00000000-0000-0000-0000-000000000000");
@@ -128,48 +129,48 @@ namespace Shop.BLL.Tests
 
             var mockCartRepository = new Mock<ICartItemsRepository>();
             mockCartRepository
-                .Setup(x => x.GetAll())
-                .Returns(new List<CartItem>());
-            mockCartRepository.Setup(x => x.Remove(It.IsAny<Guid>()));
+                .Setup(x => x.GetWhereAsync(It.IsAny<Expression<Func<CartItem, bool>>>()))
+                .ReturnsAsync(new List<CartItem>());
+            mockCartRepository.Setup(x => x.RemoveAsync(It.IsAny<Guid>()));
 
             var mockProductRepository = new Mock<IProductRepository>();
 
             var service = new CartItemsService(mockCartRepository.Object, mockProductRepository.Object, _mapper);
 
             // act
-            service.RemoveFromCard(productId, email);
+            await service.RemoveFromCardAsync(productId, email);
 
             // assert
-            mockCartRepository.Verify(x => x.Remove(It.IsAny<Guid>()), Times.Never);
+            mockCartRepository.Verify(x => x.RemoveAsync(It.IsAny<Guid>()), Times.Never);
         }
 
         [Test]
-        public void ReduceProductCount_HasItemWithQuantity2_ProductQuantityDecreased()
+        public async Task ReduceProductCountAsync_HasItemWithQuantity2_ProductQuantityDecreased()
         {
             // arrange
             var productId = Guid.Parse("a79fd279-390d-4416-ba08-c3239bf7ed37");
             var email = "test@email";
-            var testCartItems = TestData.GetTestCartItems();
+            var testCartItems = TestData.GetTestCartItems().Take(1);
 
             var mockCartRepository = new Mock<ICartItemsRepository>();
             mockCartRepository
-                .Setup(x => x.GetAll())
-                .Returns(testCartItems);
-            mockCartRepository.Setup(x => x.Update(It.IsAny<CartItem>()));
+                .Setup(x => x.GetWhereAsync(It.IsAny<Expression<Func<CartItem, bool>>>()))
+                .ReturnsAsync(testCartItems);
+            mockCartRepository.Setup(x => x.UpdateAsync(It.IsAny<CartItem>()));
 
             var mockProductRepository = new Mock<IProductRepository>();
 
             var service = new CartItemsService(mockCartRepository.Object, mockProductRepository.Object, _mapper);
 
             // act
-            service.ReduceProductCount(productId, email);
+            await service.ReduceProductCountAsync(productId, email);
 
             // assert
-            mockCartRepository.Verify(x => x.Update(It.Is<CartItem>(cartItem => cartItem.Quantity == 1)));
+            mockCartRepository.Verify(x => x.UpdateAsync(It.Is<CartItem>(cartItem => cartItem.Quantity == 1)));
         }
 
         [Test]
-        public void GetCartItems_GetAllCartItems_ReturnsCartItemList()
+        public async Task GetCartItemsAsync_GetAllCartItems_ReturnsCartItemList()
         {
             // arrange
             var email = "test@email";
@@ -177,14 +178,14 @@ namespace Shop.BLL.Tests
 
             var mockCartRepository = new Mock<ICartItemsRepository>();
             mockCartRepository
-                .Setup(x => x.GetAll())
-                .Returns(testCartItems);
+                .Setup(x => x.GetWhereAsync(It.IsAny<Expression<Func<CartItem, bool>>>()))
+                .ReturnsAsync(testCartItems);
             var mockProductRepository = new Mock<IProductRepository>();
 
             var service = new CartItemsService(mockCartRepository.Object, mockProductRepository.Object, _mapper);
             
             // act
-            var actual = service.GetCartItems(email);
+            var actual = await service.GetCartItemsAsync(email);
 
             // assert
             Assert.That(actual.Count(), Is.EqualTo(testCartItems.Count()));
@@ -192,7 +193,7 @@ namespace Shop.BLL.Tests
         }
 
         [Test]
-        public void GetTotalPrice_GetCartItemsTotalPrice_ReturnsTotalPrice()
+        public async Task GetTotalPriceAsync_GetCartItemsTotalPrice_ReturnsTotalPrice()
         {
             // arrange
             var email = "test@email";
@@ -200,8 +201,8 @@ namespace Shop.BLL.Tests
 
             var mockCartRepository = new Mock<ICartItemsRepository>();
             mockCartRepository
-                .Setup(x => x.GetAll())
-                .Returns(testCartItems);
+                .Setup(x => x.GetWhereAsync(It.IsAny<Expression<Func<CartItem, bool>>>()))
+                .ReturnsAsync(testCartItems);
             var mockProductRepository = new Mock<IProductRepository>();
 
             var service = new CartItemsService(mockCartRepository.Object, mockProductRepository.Object, _mapper);
@@ -209,13 +210,13 @@ namespace Shop.BLL.Tests
             var expected = 400;
 
             // act
-            var actual = service.GetTotalPrice(email);
+            var actual = await service.GetTotalPriceAsync(email);
 
             // assert
             Assert.That(actual, Is.EqualTo(expected));
         }
 
-        public void GetTotalCount_GetCartItemsTotalCount_ReturnsTotalCount()
+        public async Task GetTotalCountAsync_GetCartItemsTotalCount_ReturnsTotalCount()
         {
             // arrange
             var email = "test@email";
@@ -223,8 +224,8 @@ namespace Shop.BLL.Tests
 
             var mockCartRepository = new Mock<ICartItemsRepository>();
             mockCartRepository
-                .Setup(x => x.GetAll())
-                .Returns(testCartItems);
+                .Setup(x => x.GetWhereAsync(It.IsAny<Expression<Func<CartItem, bool>>>()))
+                .ReturnsAsync(testCartItems);
             var mockProductRepository = new Mock<IProductRepository>();
 
             var service = new CartItemsService(mockCartRepository.Object, mockProductRepository.Object, _mapper);
@@ -232,7 +233,7 @@ namespace Shop.BLL.Tests
             var expected = 2;
 
             // act
-            var actual = service.GetTotalCount(email);
+            var actual = await service.GetTotalCountAsync(email);
 
             // assert
             Assert.That(actual, Is.EqualTo(expected));

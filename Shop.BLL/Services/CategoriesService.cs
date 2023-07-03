@@ -18,23 +18,23 @@ namespace Shop.BLL.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<CategoryModel> GetCategoriesList()
+        public async Task<IEnumerable<CategoryModel>> GetCategoriesListAsync()
         {
-            var categories = _categoryRepository.GetAll();
+            var categories = await _categoryRepository.GetAllAsync();
             
             return _mapper.Map<List<CategoryModel>>(categories);
         }
 
-        public IEnumerable<CategoryModel> GetCategoriesTree()
+        public async Task<IEnumerable<CategoryModel>> GetCategoriesTreeAsync()
         {
-            var categories = _categoryRepository.GetAll().Where(c => c.ParentCategoryId == null);
+            var categories = await _categoryRepository.GetWhereAsync(c => c.ParentCategoryId == null);
 
             return _mapper.Map<List<CategoryModel>>(categories);
         }
 
-        public IEnumerable<Guid> GetCategoryAndChildrenIds(Guid categoryId)
+        public async Task<IEnumerable<Guid>> GetCategoryAndChildrenIdsAsync(Guid categoryId)
         {
-            var category = _categoryRepository.GetById(categoryId);
+            var category = await _categoryRepository.GetByIdAsync(categoryId);
             if (category == null)
             {
                 return new List<Guid>();
@@ -45,38 +45,38 @@ namespace Shop.BLL.Services
             return categoryAndChildrenIds;
         }
 
-        public CategoryModel AddCategory(CategoryModel category)
+        public async Task<CategoryModel> AddCategoryAsync(CategoryModel category)
         {
             var categoryToAdd = _mapper.Map<Category>(category);
-            var addedCategory = _categoryRepository.Add(categoryToAdd);
+            var addedCategory = await _categoryRepository.AddAsync(categoryToAdd);
             var categoryModel = _mapper.Map<CategoryModel>(addedCategory);
             
             return categoryModel;
         }
 
-        public void RemoveCategory(Guid categoryId)
+        public async Task RemoveCategoryAsync(Guid categoryId)
         {
-            var category = _categoryRepository.GetById(categoryId);
+            var category = await _categoryRepository.GetByIdAsync(categoryId);
             if (category == null)
             {
                 return;
             }
 
-            _categoryRepository.Remove(category.Id);
+            await _categoryRepository.RemoveAsync(category.Id);
         }
 
-        public CategoryModel UpdateCategory(CategoryModel category)
+        public async Task<CategoryModel> UpdateCategoryAsync(CategoryModel category)
         {
             var categoryToUpdate = _mapper.Map<Category>(category);
-            var updatedCategory = _categoryRepository.Update(categoryToUpdate);
+            var updatedCategory = await _categoryRepository.UpdateAsync(categoryToUpdate);
             var categotyModel = _mapper.Map<CategoryModel>(updatedCategory);
 
             return categotyModel;
         }
 
-        public bool ValidateCategory(Guid categoryId)
+        public async Task<bool> ValidateCategoryAsync(Guid categoryId)
         {
-            var category = _categoryRepository.GetById(categoryId);
+            var category = await _categoryRepository.GetByIdAsync(categoryId);
             
             return category != null;
         }

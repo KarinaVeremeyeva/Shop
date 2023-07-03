@@ -22,7 +22,7 @@ namespace Shop.DataAccess.Tests
         }
 
         [Test]
-        public void GetById_GetCartItemById_ReturnsCartItem()
+        public async Task GetByIdAsync_GetCartItemById_ReturnsCartItem()
         {
             // arrange
             var cartItemId = Guid.Parse("d787bb8f-bc03-4e54-baed-dc70d17e3f39");
@@ -34,27 +34,27 @@ namespace Shop.DataAccess.Tests
             var expected = cartItem.Id;
 
             // act
-            var actual = CartItemRepository.GetById(cartItem.Id);
+            var actual = await CartItemRepository.GetByIdAsync(cartItem.Id);
 
             // assert
             Assert.That(actual.Id, Is.EqualTo(expected));
         }
 
         [Test]
-        public void GetById_PassNotExistingCartItemId_ReturnsNull()
+        public async Task GetByIdAsync_PassNotExistingCartItemId_ReturnsNull()
         {
             // arrange
             var cartItemId = Guid.Parse("00000000-0000-0000-0000-000000000000");
 
             // act
-            var actual = CartItemRepository.GetById(cartItemId);
+            var actual = await CartItemRepository.GetByIdAsync(cartItemId);
 
             // assert
             Assert.That(actual, Is.Null);
         }
 
         [Test]
-        public void GetAll_GetAllCartItems_ReturnsAllCartItems()
+        public async Task GetAllAsync_GetAllCartItems_ReturnsAllCartItems()
         {
             // arrange
             var cartItems = TestData.GetTestCartItems();
@@ -65,20 +65,20 @@ namespace Shop.DataAccess.Tests
             var expected = Context.ShoppingCartItems;
 
             // act
-            var actual = CartItemRepository.GetAll();
+            var actual = await CartItemRepository.GetAllAsync();
 
             // assert
             Assert.That(actual.First().Id, Is.EqualTo(expected.First().Id));
         }
 
         [Test]
-        public void Add_AddCartItem_CartItemWasAdded()
+        public async Task AddAsync_AddCartItem_CartItemWasAdded()
         {
             // arrange
             var cartItemId = Guid.Parse("d787bb8f-bc03-4e54-baed-dc70d17e3f39");
             var cartItem = TestData.GetTestCartItem(cartItemId);
 
-            CartItemRepository.Add(cartItem);
+            await CartItemRepository.AddAsync(cartItem);
             var expected = cartItem.Id;
 
             // act
@@ -89,7 +89,7 @@ namespace Shop.DataAccess.Tests
         }
 
         [Test]
-        public void Update_UpdateCartItem_CartItemWasUpdated()
+        public async Task UpdateAsync_UpdateCartItem_CartItemWasUpdated()
         {
             // arrange
             var cartItemId = Guid.Parse("d787bb8f-bc03-4e54-baed-dc70d17e3f39");
@@ -100,7 +100,7 @@ namespace Shop.DataAccess.Tests
 
             var cartItemToUpdate = Context.ShoppingCartItems.FirstOrDefault(c => c.Id == cartItem.Id);
             cartItemToUpdate.Quantity = 2;
-            CartItemRepository.Update(cartItemToUpdate);
+            await CartItemRepository.UpdateAsync(cartItemToUpdate);
 
             var expected = cartItem;
 
@@ -112,7 +112,7 @@ namespace Shop.DataAccess.Tests
         }
 
         [Test]
-        public void Remove_RemoveCartItem_CartItemWasRemoved()
+        public async Task RemoveAsync_RemoveCartItem_CartItemWasRemoved()
         {
             // arrange
             var cartItemId = Guid.Parse("d787bb8f-bc03-4e54-baed-dc70d17e3f39");
@@ -120,7 +120,7 @@ namespace Shop.DataAccess.Tests
 
             Context.ShoppingCartItems.Add(cartItem);
             Context.SaveChanges();
-            CartItemRepository.Remove(cartItem.Id);
+            await CartItemRepository.RemoveAsync(cartItem.Id);
 
             // act
             var actual = Context.ShoppingCartItems.FirstOrDefault(c => c.Id == cartItem.Id);
@@ -130,11 +130,11 @@ namespace Shop.DataAccess.Tests
         }
 
         [Test]
-        public void Remove_RemoveNotExistingCartItem_CartItemWasRemoved()
+        public async Task RemoveAsync_RemoveNotExistingCartItem_CartItemWasRemoved()
         {
             // arrange
             var cartItemId = Guid.Parse("00000000-0000-0000-0000-000000000000");
-            CartItemRepository.Remove(cartItemId);
+            await CartItemRepository.RemoveAsync(cartItemId);
 
             // act
             var actual = Context.ShoppingCartItems.FirstOrDefault(c => c.Id == cartItemId);

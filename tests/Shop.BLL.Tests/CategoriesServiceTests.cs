@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Moq;
 using Shop.BLL.Services;
+using Shop.DataAccess.Entities;
 using Shop.DataAccess.Repositories;
+using System.Linq.Expressions;
 
 namespace Shop.BLL.Tests
 {
@@ -22,27 +24,27 @@ namespace Shop.BLL.Tests
         }
 
         [Test]
-        public void GetCategories_GetAllCategories_ReturnsCtaegories()
+        public async Task GetCategoriesTreeAsync_GetCategories_ReturnsCtaegories()
         {
             // arrange
             var testCategories = TestData.GetTestCategories();
 
             var mockRepository = new Mock<ICategoryRepository>();
             mockRepository
-                .Setup(x => x.GetAll())
-                .Returns(testCategories);
+                .Setup(x => x.GetWhereAsync(It.IsAny<Expression<Func<Category, bool>>>()))
+                .ReturnsAsync(testCategories);
 
             var service = new CategoriesService(mockRepository.Object, _mapper);
             
             // act
-            var actual = service.GetCategories().First();
+            var actual = await service.GetCategoriesTreeAsync();
             
             // assert
-            Assert.That(actual.Id, Is.EqualTo(testCategories.First().Id));
+            Assert.That(actual.First().Id, Is.EqualTo(testCategories.First().Id));
         }
 
         [Test]
-        public void GetCategoryAndChildrenIds_GetCategoryIds_ReturnsCategoryIds()
+        public async Task GetCategoryAndChildrenIdsAsync_GetCategoryIds_ReturnsCategoryIds()
         {
             // arrange
             var categoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6");
@@ -50,8 +52,8 @@ namespace Shop.BLL.Tests
 
             var mockRepository = new Mock<ICategoryRepository>();
             mockRepository
-                .Setup(x => x.GetById(categoryId))
-                .Returns(category);
+                .Setup(x => x.GetByIdAsync(categoryId))
+                .ReturnsAsync(category);
             var service = new CategoriesService(mockRepository.Object, _mapper);
 
             var expected = new List<Guid>
@@ -63,7 +65,7 @@ namespace Shop.BLL.Tests
             };
 
             // act
-            var actual = service.GetCategoryAndChildrenIds(categoryId);
+            var actual = await service.GetCategoryAndChildrenIdsAsync(categoryId);
 
             // assert
             Assert.That(actual.Count(), Is.EqualTo(expected.Count()));
@@ -71,7 +73,7 @@ namespace Shop.BLL.Tests
         }
 
         [Test]
-        public void GetCategoryAndChildrenIds_PassNotExistingCategoryId_ReturnsEmptyList()
+        public async Task GetCategoryAndChildrenIdsAsync_PassNotExistingCategoryId_ReturnsEmptyList()
         {
             // arrange
             var categoryId = Guid.Parse("00000000-0000-0000-0000-000000000000");
@@ -80,7 +82,7 @@ namespace Shop.BLL.Tests
             var service = new CategoriesService(mockRepository.Object, _mapper);
             
             // act 
-            var actual = service.GetCategoryAndChildrenIds(categoryId);
+            var actual = await service.GetCategoryAndChildrenIdsAsync(categoryId);
 
             // assert
             Assert.That(actual.Count(), Is.EqualTo(0));

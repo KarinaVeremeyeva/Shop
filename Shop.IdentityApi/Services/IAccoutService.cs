@@ -9,6 +9,6 @@ namespace Shop.IdentityApi.Services
 
         Task LogoutAsync();
 
-        Task<UserDataModel> GetUserData(string token);
+        Task<UserDataModel> GetUserDataAsync(string token);
     }
 }

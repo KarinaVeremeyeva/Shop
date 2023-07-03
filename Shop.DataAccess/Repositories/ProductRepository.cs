@@ -9,34 +9,35 @@ namespace Shop.DataAccess.Repositories
         {
         }
 
-        public override IEnumerable<Product> GetAll()
+        public override async Task<IEnumerable<Product>> GetAllAsync()
         {
-            var products = _context.Products
+            var products = await _context.Products
                 .Include(p => p.Category)
                 .Include(d => d.ProductDetails)
-                .ToList();
+                .ToListAsync();
 
             return products;
         }
 
-        public override Product? GetById(Guid id)
+        public override async Task<Product?> GetByIdAsync(Guid id)
         {
-            var product = _context.Products
+            var product = await _context.Products
                 .Include(p => p.Category)
-                .Include(d => d.ProductDetails.Where(pd => pd.ProductId == id))
-                .SingleOrDefault(p => p.Id == id);
+                .Include(p => p.Details)
+                .ThenInclude(d => d.ProductDetails.Where(pd => pd.ProductId == id))
+                .SingleOrDefaultAsync(p => p.Id == id);
 
             return product;
         }
 
-        public IEnumerable<Product> GetProductsByCategoryIds(IEnumerable<Guid> categoryIds)
+        public async Task<IEnumerable<Product>> GetProductsByCategoryIdsAsync(IEnumerable<Guid> categoryIds)
         {
-            var products = _context.Products
+            var products = await _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.Details)
                 .ThenInclude(d => d.ProductDetails)
                 .Where(p => categoryIds.Contains(p.CategoryId))
-                .ToList();
+                .ToListAsync();
 
             return products;
         }

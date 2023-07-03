@@ -18,47 +18,47 @@ namespace Shop.BLL.Services
             _mapper = mapper;
         }
 
-        public DetailModel AddDetail(DetailModel detail)
+        public async Task<DetailModel> AddDetailAsync(DetailModel detail)
         {
             var detailToAdd = _mapper.Map<Detail>(detail);
-            var addedDetail = _detailRepository.Add(detailToAdd);
+            var addedDetail = await _detailRepository.AddAsync(detailToAdd);
             var detailModel = _mapper.Map<DetailModel>(addedDetail);
 
             return detailModel;
         }
 
-        public void RemoveDetail(Guid detailId)
+        public async Task RemoveDetailAsync(Guid detailId)
         {
-            var detail = _detailRepository.GetById(detailId);
+            var detail = await _detailRepository.GetByIdAsync(detailId);
             if (detail == null)
             {
                 return;
             }
 
-            _detailRepository.Remove(detail.Id);
+            await _detailRepository.RemoveAsync(detail.Id);
         }
 
-        public DetailModel UpdateDetail(DetailModel detail)
+        public async Task<DetailModel> UpdateDetailAsync(DetailModel detail)
         {
             var detailToUpdate = _mapper.Map<Detail>(detail);
-            var updatedDetail = _detailRepository.Update(detailToUpdate);
+            var updatedDetail = await _detailRepository.UpdateAsync(detailToUpdate);
             var detailModel = _mapper.Map<DetailModel>(updatedDetail);
 
             return detailModel;
         }
 
-        public List<DetailModel> GetDetails()
+        public async Task<List<DetailModel>> GetDetailsAsync()
         {
-            var details = _detailRepository.GetAll();
+            var details = await _detailRepository.GetAllAsync();
             var detailsModels = _mapper.Map<List<DetailModel>>(details);
             
             return detailsModels;
         }
 
-        public bool ValidateProductDetails(List<ProductDetailModel> productDetails)
+        public async Task<bool> ValidateProductDetailsAsync(List<ProductDetailModel> productDetails)
         {
             var productDetailsIds = productDetails.Select(pd => pd.DetailId);
-            var details = GetDetails();
+            var details = await GetDetailsAsync();
 
             var isValid = productDetails.All(productDetail =>
             {

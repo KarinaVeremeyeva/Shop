@@ -4,6 +4,6 @@ namespace Shop.BLL.Services
 {
     public interface IIdentityApiService
     {
-        Task<UserDataModel?> GetUserData(string token);
+        Task<UserDataModel?> GetUserDataAsync(string token);
     }
 }

@@ -22,7 +22,7 @@ namespace Shop.BLL.Tests
         }
 
         [Test]
-        public void GetProduct_GetProductById_ReturnsProduct()
+        public async Task GetProductAsync_GetProductById_ReturnsProduct()
         {
             // arrange
             var productId = Guid.Parse("ee83d6ba-c84b-4a60-99d8-76a9833ca11a");
@@ -30,22 +30,22 @@ namespace Shop.BLL.Tests
 
             var mockRepository = new Mock<IProductRepository>();
             mockRepository
-                .Setup(x => x.GetById(productId))
-                .Returns(testProduct);
+                .Setup(x => x.GetByIdAsync(productId))
+                .ReturnsAsync(testProduct);
 
             var mockService = new Mock<ICategoriesService>();
 
             var service = new ProductsService(mockService.Object, mockRepository.Object, _mapper);
 
             // act
-            var actual = service.GetProduct(productId);
+            var actual = await service.GetProductAsync(productId);
 
             // assert
-            Assert.That(actual.Id, Is.EqualTo(testProduct.Id));
+            Assert.That(actual!.Id, Is.EqualTo(testProduct.Id));
         }
 
         [Test]
-        public void GetProductByCategoryId_GetProducts_ReturnsSelectedProducts()
+        public async Task GetProductByCategoryIdAsync_GetProducts_ReturnsSelectedProducts()
         {
             // arrange
             var testProducts = TestData.GetTestProducts();
@@ -53,8 +53,8 @@ namespace Shop.BLL.Tests
             
             var mockRepository = new Mock<IProductRepository>();
             mockRepository
-                .Setup(x => x.GetProductsByCategoryIds(It.IsAny<IEnumerable<Guid>>()))
-                .Returns(testProducts);
+                .Setup(x => x.GetProductsByCategoryIdsAsync(It.IsAny<IEnumerable<Guid>>()))
+                .ReturnsAsync(testProducts);
 
             var categoryIds = new List<Guid>
             {
@@ -64,13 +64,13 @@ namespace Shop.BLL.Tests
 
             var mockService = new Mock<ICategoriesService>();
             mockService
-                .Setup(x => x.GetCategoryAndChildrenIds(It.IsAny<Guid>()))
-                .Returns(categoryIds);
+                .Setup(x => x.GetCategoryAndChildrenIdsAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(categoryIds);
 
             var service = new ProductsService(mockService.Object, mockRepository.Object, _mapper);
 
             // act
-            var actual = service.GetProductByCategoryId(categoryId);
+            var actual = await service.GetProductByCategoryIdAsync(categoryId);
             
             // assert
             Assert.That(actual.Count(), Is.EqualTo(testProducts.Count()));

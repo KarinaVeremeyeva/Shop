@@ -32,9 +32,9 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<DetailInfoDto>))]
-        public IActionResult GetDetails()
+        public async Task<IActionResult> GetDetailsAsync()
         {
-            var details = _detailService.GetDetails();
+            var details = await _detailService.GetDetailsAsync();
             var result = _mapper.Map<List<DetailInfoDto>>(details);
 
             return Ok(result);
@@ -44,16 +44,16 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DetailInfoDto))]
-        public IActionResult AddDetail(DetailInfoDto detailDto)
+        public async Task<IActionResult> AddDetailAsync(DetailInfoDto detailDto)
         {
-            var validationErrors = _validator.Validate(detailDto);
+            var validationErrors = await _validator.ValidateAsync(detailDto);
             if (!string.IsNullOrEmpty(validationErrors))
             {
                 return BadRequest(validationErrors);
             }
 
             var detailModel = _mapper.Map<DetailModel>(detailDto);
-            var addedDetail = _detailService.AddDetail(detailModel);
+            var addedDetail = await _detailService.AddDetailAsync(detailModel);
             var result = _mapper.Map<DetailInfoDto>(addedDetail);
 
             return Ok(result);
@@ -63,9 +63,9 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult RemoveDetail(Guid detailId)
+        public async Task<IActionResult> RemoveDetailAsync(Guid detailId)
         {
-            _detailService.RemoveDetail(detailId);
+            await _detailService.RemoveDetailAsync(detailId);
 
             return Ok();
         }
@@ -74,16 +74,16 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DetailInfoDto))]
-        public IActionResult UpdateDetail(DetailInfoDto detailDto)
+        public async Task<IActionResult> UpdateDetailAsync(DetailInfoDto detailDto)
         {
-            var validationErrors = _validator.Validate(detailDto);
+            var validationErrors = await _validator.ValidateAsync(detailDto);
             if (!string.IsNullOrEmpty(validationErrors))
             {
                 return BadRequest(validationErrors);
             }
 
             var detailModel = _mapper.Map<DetailModel>(detailDto);
-            var updatedDetail = _detailService.UpdateDetail(detailModel);
+            var updatedDetail = await _detailService.UpdateDetailAsync(detailModel);
             var result = _mapper.Map<DetailInfoDto>(updatedDetail);
 
             return Ok(result);

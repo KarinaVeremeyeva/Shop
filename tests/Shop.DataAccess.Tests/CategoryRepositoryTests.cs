@@ -22,7 +22,7 @@ namespace Shop.DataAccess.Tests
         }
 
         [Test]
-        public void GetById_GetCategoryById_ReturnsCategory()
+        public async Task GetByIdAsync_GetCategoryById_ReturnsCategory()
         {
             // arrange
             var categoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6");
@@ -34,27 +34,27 @@ namespace Shop.DataAccess.Tests
             var expected = category.Id;
 
             // act
-            var actual = CategoryRepository.GetById(category.Id);
+            var actual = await CategoryRepository.GetByIdAsync(category.Id);
             
             // assert
             Assert.That(actual.Id, Is.EqualTo(expected));
         }
 
         [Test]
-        public void GetById_PassNotExistingCategoryId_ReturnsNull()
+        public async Task GetByIdAsync_PassNotExistingCategoryId_ReturnsNull()
         {
             // arrange
             var categoryId = Guid.Parse("00000000-0000-0000-0000-000000000000");
 
             // act
-            var actual = CategoryRepository.GetById(categoryId);
+            var actual = await CategoryRepository.GetByIdAsync(categoryId);
 
             // assert
             Assert.That(actual, Is.Null);
         }
 
         [Test]
-        public void GetById_GetChildCategoryById_ReturnsCategory()
+        public async Task GetByIdAsync_GetChildCategoryById_ReturnsCategory()
         {
             // arrange
             var categoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6");
@@ -67,14 +67,14 @@ namespace Shop.DataAccess.Tests
             var expected = category.ChildCategories.First();
 
             // act
-            var actual = CategoryRepository.GetById(childCategoryId);
+            var actual = await CategoryRepository.GetByIdAsync(childCategoryId);
 
             // assert
             Assert.That(actual.Id, Is.EqualTo(expected.Id));
         }
 
         [Test]
-        public void GetById_GetGrandChildCategoryById_ReturnsCategory()
+        public async Task GetByIdAsync_GetGrandChildCategoryById_ReturnsCategory()
         {
             // arrange
             var categoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6");
@@ -87,14 +87,14 @@ namespace Shop.DataAccess.Tests
             var expected = grandChildCategoryId;
 
             // act
-            var actual = CategoryRepository.GetById(grandChildCategoryId);
+            var actual = await CategoryRepository.GetByIdAsync(grandChildCategoryId);
 
             // assert
             Assert.That(actual.Id, Is.EqualTo(expected));
         }
 
         [Test]
-        public void GetAll_GetAllCategories_ReturnsAllCategories()
+        public async Task GetAllAsync_GetAllCategories_ReturnsAllCategories()
         {
             // arrange
             var categories = TestData.GetTestCategories();
@@ -105,20 +105,20 @@ namespace Shop.DataAccess.Tests
             var expected = Context.Categories;
 
             // act
-            var actual = CategoryRepository.GetAll();
+            var actual = await CategoryRepository.GetAllAsync();
 
             // assert
             Assert.That(actual.First().Id, Is.EqualTo(expected.First().Id));
         }
 
         [Test]
-        public void Add_AddCategory_CategoryWasSaved()
+        public async Task AddAsync_AddCategory_CategoryWasSaved()
         {
             // arrange
             var categoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6");
             var category = TestData.GetTestCategory(categoryId);
 
-            CategoryRepository.Add(category);
+            await CategoryRepository.AddAsync(category);
 
             var expected = category.Id;
 
@@ -130,7 +130,7 @@ namespace Shop.DataAccess.Tests
         }
 
         [Test]
-        public void Update_UpdateCategory_CategoryWasUpdated()
+        public async Task UpdateAsync_UpdateCategory_CategoryWasUpdated()
         {
             // arrange
             var categoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6");
@@ -141,7 +141,7 @@ namespace Shop.DataAccess.Tests
 
             var categoryToUpdate = Context.Categories.First(c => c.Id == category.Id);
             categoryToUpdate.Name = "Updated Category";
-            CategoryRepository.Update(categoryToUpdate);
+            await CategoryRepository.UpdateAsync(categoryToUpdate);
             var expected = category;
 
             // act
@@ -152,7 +152,7 @@ namespace Shop.DataAccess.Tests
         }
 
         [Test]
-        public void Remove_RemoveCategory_CategoryWasRemoveed()
+        public async Task RemoveAsync_RemoveCategory_CategoryWasRemoveed()
         {
             // arrange
             var categoryId = Guid.Parse("4f9702de-cefd-4bac-93ec-0a4b5cb77ca6");
@@ -160,7 +160,7 @@ namespace Shop.DataAccess.Tests
 
             Context.Categories.Add(category);
             Context.SaveChanges();
-            CategoryRepository.Remove(category.Id);
+            await CategoryRepository.RemoveAsync(category.Id);
 
             // act
             var actual = Context.Categories.FirstOrDefault(c => c.Id == category.Id);
@@ -170,11 +170,11 @@ namespace Shop.DataAccess.Tests
         }
 
         [Test]
-        public void Remove_RemoveNotExistingCategory_CategoryWasNotRemoved()
+        public async Task RemoveAsync_RemoveNotExistingCategory_CategoryWasNotRemoved()
         {
             // arrange
             var categoryId = Guid.Parse("00000000-0000-0000-0000-000000000000");
-            CategoryRepository.Remove(categoryId);
+            await CategoryRepository.RemoveAsync(categoryId);
 
             // act
             var actual = Context.Categories.FirstOrDefault(c => c.Id == categoryId);

@@ -29,15 +29,15 @@ namespace Shop.Api.Controllers
 
         [HttpPost("category/{categoryId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductResultDto))]
-        public IActionResult GetProductsByCategoryId([FromRoute] Guid categoryId,
+        public async Task<IActionResult> GetProductsByCategoryIdAsync([FromRoute] Guid categoryId,
             int pageNumber = 1,
             [FromBody] List<SelectedFilterDto>? selectedFilters = null)
         {
             var selectedFiltersModels = _mapper.Map<List<SelectedFilterModel>>(selectedFilters);
-            var productsPaginatedModels = _productsService.GetProductByCategoryId(categoryId, pageNumber, selectedFiltersModels);
+            var productsPaginatedModels = await _productsService.GetProductByCategoryIdAsync(categoryId, pageNumber, selectedFiltersModels);
             var productResultDto = _mapper.Map<ProductResultDto>(productsPaginatedModels);
 
-            var filters = _productsService.GetFiltersByCategoryId(categoryId);
+            var filters = await _productsService.GetFiltersByCategoryIdAsync(categoryId);
             var filtersDto = _mapper.Map<List<FilterDto>>(filters);
             productResultDto.Filters = filtersDto;
 
@@ -46,9 +46,9 @@ namespace Shop.Api.Controllers
 
         [HttpGet("{productId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductDto))]
-        public IActionResult GetProductsById([FromRoute] Guid productId)
+        public async Task<IActionResult> GetProductsByIdAsync([FromRoute] Guid productId)
         {
-            var product = _productsService.GetProduct(productId);
+            var product = await _productsService.GetProductAsync(productId);
             var productDto = _mapper.Map<ProductDto>(product);
 
             return Ok(productDto);
@@ -60,9 +60,9 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ProductInfoDto>))]
 
-        public IActionResult GetProducts()
+        public async Task<IActionResult> GetProductsAsync()
         {
-            var products = _productsService.GetProducts();
+            var products = await _productsService.GetProductsAsync();
             var productsDto = _mapper.Map<List<ProductInfoDto>>(products);
 
             return Ok(productsDto);
@@ -73,16 +73,16 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductInfoDto))]
-        public IActionResult AddProduct(ProductInfoDto productDto)
+        public async Task<IActionResult> AddProductAsync(ProductInfoDto productDto)
         {
             var productModel = _mapper.Map<ProductModel>(productDto);
-            var validationErrors = _validator.Validate(productModel);
+            var validationErrors = await _validator.ValidateAsync(productModel);
             if (!string.IsNullOrEmpty(validationErrors))
             {
                 return BadRequest(validationErrors);
             }
 
-            var addedProduct = _productsService.AddProduct(productModel);
+            var addedProduct = await _productsService.AddProductAsync(productModel);
             var result = _mapper.Map<ProductInfoDto>(addedProduct);
 
             return Ok(result);
@@ -93,9 +93,9 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult RemoveProduct(Guid productId)
+        public async Task<IActionResult> RemoveProductAsync(Guid productId)
         {
-            _productsService.RemoveProduct(productId);
+            await _productsService.RemoveProductAsync(productId);
 
             return Ok();
         }
@@ -105,16 +105,16 @@ namespace Shop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductInfoDto))]
-        public IActionResult UpdateProduct(ProductInfoDto productDto)
+        public async Task<IActionResult> UpdateProductAsync(ProductInfoDto productDto)
         {
             var productModel = _mapper.Map<ProductModel>(productDto);
-            var validationErrors = _validator.Validate(productModel);
+            var validationErrors = await _validator.ValidateAsync(productModel);
             if (!string.IsNullOrEmpty(validationErrors))
             {
                 return BadRequest(validationErrors);
             }
 
-            var updatedProduct = _productsService.UpdateProduct(productModel);
+            var updatedProduct = await _productsService.UpdateProductAsync(productModel);
             var result = _mapper.Map<ProductInfoDto>(updatedProduct);
 
             return Ok(result);

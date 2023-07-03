@@ -4,7 +4,7 @@ namespace Shop.Api.Validators
 {
     public class DetailValidator : IValidator<DetailInfoDto>
     {
-        public string Validate(DetailInfoDto entity)
+        public Task<string> ValidateAsync(DetailInfoDto entity)
         {
             var validationErrors = new List<string>();
             if (string.IsNullOrEmpty(entity.Name))
@@ -18,7 +18,7 @@ namespace Shop.Api.Validators
                 validationErrors.Add("Detail type is required");
             }
 
-            return string.Join(", ", validationErrors);
+            return Task.FromResult(string.Join(", ", validationErrors));
         }
     }
 }

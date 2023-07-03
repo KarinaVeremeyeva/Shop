@@ -1,17 +1,22 @@
 ﻿using Shop.DataAccess.Entities;
+using System.Linq.Expressions;
 
 namespace Shop.DataAccess.Repositories
 {
     public interface IRepository<TEntity> where TEntity : Entity
     {
-        TEntity? GetById(Guid id);
+        Task<TEntity?> GetByIdAsync(Guid id);
 
-        IEnumerable<TEntity> GetAll();
+        Task<IEnumerable<TEntity>> GetAllAsync();
 
-        TEntity Add(TEntity entity);
+        Task<TEntity> AddAsync(TEntity entity);
 
-        TEntity Update(TEntity entity);
+        Task<TEntity> UpdateAsync(TEntity entity);
 
-        void Remove(Guid id);
+        Task RemoveAsync(Guid id);
+
+        Task<IEnumerable<TEntity>> GetWhereAsync(
+            Expression<Func<TEntity, bool>> predicate,
+            params Expression<Func<TEntity, object>>[] loadStrategies);
     }
 }
