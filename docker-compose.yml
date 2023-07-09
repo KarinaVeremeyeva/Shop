@@ -1,0 +1,35 @@
+version: '3.4'
+
+services:
+    db:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        ports:
+            - 1433:1433
+        environment:
+            SA_PASSWORD: "S3cur3P@ssW0rd!"
+            ACCEPT_EULA: "Y"
+        volumes:
+            - db-data:/var/lib/mssql/data
+
+    shop.api:
+        image: ${DOCKER_REGISTRY-}shopapi
+        build:
+            context: .
+            dockerfile: Shop.Api/Dockerfile
+        ports:
+            - 5000:80
+        depends_on:
+            - db
+
+    shop.identityapi:
+        image: ${DOCKER_REGISTRY-}shopidentityapi
+        build:
+            context: .
+            dockerfile: Shop.IdentityApi/Dockerfile
+        ports:
+            - 5001:80
+        depends_on:
+            - db
+
+volumes:
+ db-data:
