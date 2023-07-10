@@ -10,7 +10,7 @@ const string Name = "AllowAnyOrigin";
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetValue<string>("DefaultConnection");
 var tokenSettings = builder.Configuration.GetSection("JwtTokenSettings");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -58,8 +58,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.UseCors(Name);
 

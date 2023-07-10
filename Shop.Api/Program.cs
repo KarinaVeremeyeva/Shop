@@ -19,8 +19,8 @@ internal class Program
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        var identityString = builder.Configuration.GetSection("ApiSettings:IdentityBaseAddress").Value;
+        var connectionString = builder.Configuration.GetValue<string>("DefaultConnection");
+        var identityString = builder.Configuration.GetValue<string>("IdentityBaseAddress");
 
         builder.Services.AddDbContext<ShopContext>(options =>
         {
@@ -105,14 +105,11 @@ internal class Program
         });
 
         var app = builder.Build();
-
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
-        app.UseHttpsRedirection();
 
         app.UseCors(CorsPolicyName);
 
